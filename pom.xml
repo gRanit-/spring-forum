@@ -35,10 +35,10 @@
 	</properties>
 
 	<build>
-	
+
 		<plugins>
-		
-		<!-- Jetty Runner -->
+
+			<!-- Jetty Runner -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -62,15 +62,22 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-			
+
+
 		</plugins>
-		
+
 	</build>
-	
+
 	<dependencies>
-		
-		
+	
+	<!-- Apache Commons -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+
 		<!-- PostgreSQL -->
 		<dependency>
 			<groupId>postgresql</groupId>
