@@ -11,14 +11,22 @@
 
 
 	<mvc:annotation-driven />
+<context:annotation-config/>
+<context:component-scan base-package="controllers"/>
+    
+ 
+    <bean id="viewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+        <property name="prefix">
+            <value>/WEB-INF/view/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+    
 
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
-		<property name="prefix" value="/WEB-INF/view/" />
-		<property name="suffix" value=".jsp" />
-	</bean>
-
+	
 <bean class="java.net.URI" id="dbUrl">
     <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
 </bean>
