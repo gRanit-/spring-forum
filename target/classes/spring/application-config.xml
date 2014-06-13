@@ -7,13 +7,13 @@
 
 	<!-- Uncomment and add your base-package here: <context:component-scan base-package="org.springframework.samples.service"/> -->
 
-    <bean name="/welcome.htm" 
+    <bean name="/welcome" 
 	class="controllers.ShowMessage_Controller" />
  
     <bean id="viewResolver"
     	class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
         <property name="prefix">
-            <value>/WEB-INF/pages/</value>
+            <value>/WEB-INF/view/</value>
         </property>
         <property name="suffix">
             <value>.jsp</value>
