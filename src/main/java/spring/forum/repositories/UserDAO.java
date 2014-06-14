@@ -38,7 +38,7 @@ public class UserDAO {
     public void updateUser(User user) {
     	this.sessionFactory.getCurrentSession().update(user);
     }
-    public User getUserById(int userId) {
+    public User getUserById(long userId) {
         return (User) this.sessionFactory.getCurrentSession().get(User.class, userId);
     }
     
@@ -48,6 +48,28 @@ public class UserDAO {
                 .setParameter(0, email).list().get(0);
     }
     
+
+    public void deleteUser(long userId) {
+        User user = (User) this.sessionFactory.getCurrentSession().load(User.class, userId);
+        if (user != null) {
+            this.sessionFactory.getCurrentSession().delete(user);
+        }
+    }
     
+    public void updateUserPassword(String email, String newPassword) {
+        User user = getUserByEmail(email);
+        if(user != null) {
+            user.setPassword(newPassword);
+            updateUser(user);
+        }
+    }
+    
+    public void updateUserNickname(String email, String newNickname) {
+        User user = getUserByEmail(email);
+        if(user != null) {
+            user.setNick(newNickname);
+            updateUser(user);
+        }
+    }
     
 }

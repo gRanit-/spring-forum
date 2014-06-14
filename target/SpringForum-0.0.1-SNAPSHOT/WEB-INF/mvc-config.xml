@@ -50,7 +50,7 @@
 
 	<!--Session factory for hibernate -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="dataSource" ref="datasource"></property>
 		   <property name="configLocation">
             <value>classpath:hibernate.cfg.xml</value>
@@ -77,6 +77,12 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	 <bean id="userManager" class="spring.forum.services.UserManager">
+	 
+	 </bean>
+	 
+	 
+	 
 	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService">
 		<property name="userDAO" ref="userDAO" />
 	</bean>

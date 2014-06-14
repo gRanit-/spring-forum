@@ -1,26 +1,24 @@
 package spring.forum.models;
 
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "user_roles")
 public class UserRole {
 
+
+
 	@Id
 	@Column(name = "ID", nullable = false, unique = true)
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer userRoleId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +27,22 @@ public class UserRole {
 
 	@Column(name = "ROLE", nullable = false, length = 45)
 	private String role;
+
+	
+	public UserRole(Integer userRoleId, User user, String role) {
+		super();
+		this.userRoleId = userRoleId;
+		this.user = user;
+		this.role = role;
+	}
+	
+	
+	public UserRole(User user, String role) {
+		super();
+		this.user = user;
+		this.role = role;
+	}
+
 
 	public Integer getUserRoleId() {
 		return this.userRoleId;

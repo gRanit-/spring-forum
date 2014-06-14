@@ -2,11 +2,14 @@ package spring.forum.models;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import spring.forum.models.UserRole;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,13 +20,13 @@ import javax.validation.constraints.NotNull;
 public class User {
 	@Id
 	@Column(name = "ID",nullable=false,unique=true)
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
-
-	@Column(name = "login",nullable=false,unique=true)
-	private String login;
 	
-	@Column(name = "TOKEN",nullable=false)
+	@Column(name = "nick",nullable=false,unique=true)
+	private String nick;
+	
+	@Column(name = "TOKEN",nullable=true)
 	private String token;
 	
 	@Column(name = "EMAIL",nullable=false,unique=true)
@@ -52,8 +55,8 @@ public class User {
 		return id;
 	}
 
-	public String getLogin() {
-		return login;
+	public String getNick() {
+		return nick;
 	}
 
 	public void setPassword(String password) {
@@ -93,8 +96,9 @@ public class User {
 		this.id = id;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setNick(String nick) {
+		this.nick = nick;
 	}
+
 
 }
