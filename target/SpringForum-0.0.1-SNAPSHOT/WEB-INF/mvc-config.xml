@@ -2,40 +2,49 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		  http://www.springframework.org/schema/aop 
+	
+  http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		">
 
 	<!-- Uncomment and your base-package here: <context:component-scan base-package="org.springframework.samples.web"/> -->
 
 
 	<mvc:annotation-driven />
-<context:annotation-config/>
-<context:component-scan base-package="controllers"/>
-    
- 
-    <bean id="viewResolver"
-        class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
-        <property name="prefix">
-            <value>/WEB-INF/view/</value>
-        </property>
-        <property name="suffix">
-            <value>.jsp</value>
-        </property>
-    </bean>
-    
+	<context:annotation-config />
+	<context:component-scan base-package="spring.forum.*" />
 
-	
-<bean class="java.net.URI" id="dbUrl">
-    <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
-</bean>
 
-<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource">
-    <property name="url" value="#{ 'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath() }"/>
-    <property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }"/>
-    <property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }"/>
-</bean>
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/view/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+
+
+	<bean class="java.net.URI" id="dbUrl">
+		<constructor-arg value="#{systemEnvironment['DATABASE_URL']}" />
+	</bean>
+
+	<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="url"
+			value="#{ 'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath() }" />
+		<property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }" />
+		<property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }" />
+	</bean>
 
 
 
@@ -43,7 +52,9 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource" ref="datasource"></property>
-
+		   <property name="configLocation">
+            <value>classpath:hibernate.cfg.xml</value>
+        </property>
 		<property name="configurationClass">
 			<value>org.hibernate.cfg.AnnotationConfiguration</value>
 		</property>
@@ -56,11 +67,44 @@
 		</property>
 	</bean>
 
-	<!--hiberate transation manager -->
+	<!-- MUST have transaction manager, using aop and aspects -->
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 
+	<bean id="userDAO" class="spring.forum.repositories.UserDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 
+	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService">
+		<property name="userDAO" ref="userDAO" />
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="userServicePointCut"
+			expression="execution(* spring.forum.models.*Service.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="userServicePointCut" />
+	</aop:config>
+
+  <!--Maping annnotation for spring mvc-->
+    <mvc:resources mapping="/resources/**" location="/res/"/>
+
+    <tx:annotation-driven/>
+    <context:annotation-config/>
+    <context:component-scan base-package="spring.forum.*"/>
+    <mvc:annotation-driven/>
+    
+    
+    
+    
+    
 </beans>
