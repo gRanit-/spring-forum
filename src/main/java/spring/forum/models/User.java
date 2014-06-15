@@ -19,38 +19,60 @@ import javax.validation.constraints.NotNull;
 @Table(name = "USERS")
 public class User {
 	@Id
-	@Column(name = "ID",nullable=false,unique=true)
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "USER_ID", nullable = false, unique = true)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	
-	@Column(name = "nick",nullable=false,unique=true)
+
+	@Column(name = "nick", nullable = false, unique = true)
 	private String nick;
-	
-	@Column(name = "TOKEN",nullable=true)
+
+	@Column(name = "TOKEN", nullable = true)
 	private String token;
-	
-	@Column(name = "EMAIL",nullable=false,unique=true)
+
+	@Column(name = "EMAIL", nullable = false, unique = true)
 	@NotNull
 	private String email;
 
-	@Column(name = "PASSWORD",nullable=false)
+	@Column(name = "PASSWORD", nullable = false)
 	@NotNull
 	private String password;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private Set<UserRole> userRole;
-	
+
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
-	
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+	private Set<Post> posts;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+	private Set<Topic> topics;
+
+	public Set<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(Set<Post> posts) {
+		this.posts = posts;
+	}
+
+	public Set<Topic> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(Set<Topic> topics) {
+		this.topics = topics;
+	}
+
 	public boolean isEnabled() {
 		return this.enabled;
 	}
- 
+
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
- 
+
 	public long getId() {
 		return id;
 	}
@@ -71,11 +93,10 @@ public class User {
 		this.email = email;
 	}
 
-	
 	public Set<UserRole> getUserRole() {
 		return this.userRole;
 	}
- 
+
 	public void setUserRole(Set<UserRole> userRole) {
 		this.userRole = userRole;
 	}
@@ -99,6 +120,5 @@ public class User {
 	public void setNick(String nick) {
 		this.nick = nick;
 	}
-
 
 }
