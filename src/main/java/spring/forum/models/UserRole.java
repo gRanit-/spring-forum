@@ -53,7 +53,7 @@ public class UserRole {
 	}
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	public User getUser() {
 		return this.user;

@@ -24,13 +24,13 @@ public class Post {
 	private String text;
 
 	@Column(name = "CREATION_DATE")
-	private String creatonDate;
+	private String creationDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User author;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "TOPIC_ID", nullable = false)
 	private Topic topic;
 
@@ -50,12 +50,12 @@ public class Post {
 		this.text = text;
 	}
 
-	public String getCreatonDate() {
-		return creatonDate;
+	public String getCreationDate() {
+		return creationDate;
 	}
 
-	public void setCreatonDate(String creatonDate) {
-		this.creatonDate = creatonDate;
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	public long getId() {

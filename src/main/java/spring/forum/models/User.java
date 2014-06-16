@@ -54,7 +54,7 @@ public class User {
 		this.userRole = userRole;
 	}
  
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
 	public Set<Post> getPosts() {
 		return posts;
 	}
@@ -63,7 +63,7 @@ public class User {
 		this.posts = posts;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
 	public Set<Topic> getTopics() {
 		return topics;
 	}
@@ -111,7 +111,7 @@ public class User {
 		this.email = email;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	public Set<UserRole> getUserRole() {
 		return this.userRole;
 	}

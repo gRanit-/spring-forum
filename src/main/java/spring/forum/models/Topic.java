@@ -33,11 +33,11 @@ public class Topic {
 	@Column(name = "CREATION_DATE")
 	private String date;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User author;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "topic",cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "topic",cascade=CascadeType.ALL)
 	private Set<Post> posts=new HashSet<Post>(0);
 
 	//@ManyToOne(fetch = FetchType.LAZY)

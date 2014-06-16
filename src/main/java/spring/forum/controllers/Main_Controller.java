@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.time.DateUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -119,7 +122,7 @@ public class Main_Controller {
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request) {
-		return "j_spring_security_logout";
+		return "redirect:j_spring_security_logout";
 
 	}
 	
@@ -159,12 +162,9 @@ public class Main_Controller {
 		user.setToken("token");
 		user.setEnabled(true);
 		UserRole role=new UserRole(user, "ROLE_USER");
-		//if(user.getUserRole()==null){
-			//user.setUserRole();
-			user.getUserRole().add(role);
-		//	System.out.println("added role");
-			
-		//}
+
+		user.getUserRole().add(role);
+
 		
 		userManager.addUser(user);
 		
@@ -173,13 +173,14 @@ public class Main_Controller {
 		return "login";
 
 	}
-	@RequestMapping(value = "/createTopic", method = RequestMethod.GET)
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "/addTopic", method = RequestMethod.GET)
 	public ModelAndView createTopic(Map<String, Object> model){
 		return new ModelAndView("add_topic_form","topic",new Topic());
 		
 	}
-	
-	@RequestMapping(value = "/createTopic", method = RequestMethod.POST)
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "/addTopic", method = RequestMethod.POST)
 	public String createTopic(final @Valid @ModelAttribute spring.forum.models.Topic topic,
 			final BindingResult result,
 			final SessionStatus status,Authentication authentication){
@@ -188,21 +189,46 @@ public class Main_Controller {
 		topic.setAuthor(usr);
 		topicManager.addTopic(topic);
 		
-		return "";
+		return "showTopic/"+topic.getId();
 		
 	}
-	
-	@RequestMapping(value = "/showTopic/{topicID}", method = RequestMethod.POST)
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "/showTopic/{topicID}", method = RequestMethod.GET)
 	public ModelAndView showTopic(@PathVariable String topicID,Model model){
 		Topic topic=topicManager.getTopicByID(Integer.parseInt(topicID));
 		List<Post> posts=postManager.getAllPostsForTopic(topic);
-		
+		//Hibernate.initialize(topic);
+		//for(Post p :posts)
+		//	Hibernate.initialize(p);
+		//Hibernate.initialize(posts);
 		model.addAttribute("topic", topic);
 		model.addAttribute("posts",posts);
 		
-		return new ModelAndView("show_topic"); 
-			
+		return new ModelAndView("show_topic","post",new Post()); 	
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "/addPost", method = RequestMethod.GET)
+	public ModelAndView addPost(){
+		return new ModelAndView("add_post_form","post",new Post());
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "/addPostToTopic/{topicID}", method = RequestMethod.POST)
+	public String addPost(@PathVariable String topicID,
+			final @Valid @ModelAttribute spring.forum.models.Post post,
+			final BindingResult result,
+			final SessionStatus status,Authentication authentication){
 		
+		Topic topic=topicManager.getTopicByID(Integer.parseInt(topicID));
+		post.setCreationDate(spring.forum.controllers.DateUtils.getCurrentDate());
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		User usr=userManager.getUserByEmail(userDetails.getUsername());
+		post.setAuthor(usr);
+		post.setTopic(topic);
+		postManager.addPost(post);
+
+		return "show_topic/"+topic.getId(); 
 	}
 	
 }
