@@ -25,7 +25,7 @@
  
 	<authentication-manager>
 		<authentication-provider user-service-ref="userDetailsService" >
-			<password-encoder hash="bcrypt" />    
+		<!--  <password-encoder hash="bcrypt" />   --> 
 		</authentication-provider>
 	</authentication-manager>
 	
