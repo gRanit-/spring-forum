@@ -218,11 +218,21 @@ public class Main_Controller {
 	public ModelAndView showTopic(@PathVariable String topicID,Model model){
 		Topic topic=topicManager.getTopicByID(Integer.parseInt(topicID));
 		List<Post> posts=postManager.getAllPostsForTopic(topic);
-;
+
 		model.addAttribute("topic", topic);
 		model.addAttribute("posts",posts);
 		
 		return new ModelAndView("show_topic","post",new Post()); 	
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "/showAllTopics", method = RequestMethod.GET)
+	public ModelAndView showAllTopics(Model model){
+		
+		List<Topic> topics=topicManager.getAllTopics();
+		model.addAttribute("topics", topics);
+		
+		return new ModelAndView("show_all_topics"); 	
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")

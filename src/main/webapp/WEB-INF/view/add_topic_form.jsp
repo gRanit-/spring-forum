@@ -6,7 +6,7 @@
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
  
  
- <form:form action="createTopic" method="POST" modelAttribute="topic">
+ <form:form action="addTopic" method="POST" modelAttribute="topic">
  <table class="addPostTable">
         <tr>
             <td><label for="title">Topic</label></td>
