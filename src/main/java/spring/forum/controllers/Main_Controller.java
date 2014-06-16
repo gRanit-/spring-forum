@@ -67,10 +67,12 @@ public class Main_Controller {
 			@RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "logout", required = false) String logout,
 			HttpServletRequest request) {
-		System.out.println(request.getAttribute("username"));
+		System.out.println(request.getAttribute("email"));
 		ModelAndView model = new ModelAndView();
 		if (error != null) {
+			
 			System.out.println("login error");
+			
 			model.addObject("error",
 					getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
 		}
@@ -136,7 +138,7 @@ public class Main_Controller {
 	}
 			
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
-	public ModelAndView createNewUser(
+	public String createNewUser(
 			final @Valid @ModelAttribute spring.forum.models.User user,
 			final BindingResult result,
 			final SessionStatus status) {
@@ -144,16 +146,18 @@ public class Main_Controller {
 		user.setToken("token");
 		user.setEnabled(true);
 		UserRole role=new UserRole(user, "ROLE_USER");
-		if(user.getUserRole()==null){
-			user.setUserRole(new HashSet<UserRole>());
+		//if(user.getUserRole()==null){
+			//user.setUserRole();
 			user.getUserRole().add(role);
-		}
+		//	System.out.println("added role");
+			
+		//}
 		
 		userManager.addUser(user);
 		
 		//ModelAndView model =new ModelAndView();
 		System.out.println(user.getEmail());
-		return login(null, null, null);
+		return "login";
 
 	}
 }

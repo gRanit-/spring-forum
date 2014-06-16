@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,37 +17,44 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "USERS")
 public class User {
-	@Id
-	@Column(name = "USER_ID",columnDefinition = "serial")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+
 	private long id;
 
-	@Column(name = "nick", nullable = false, unique = true)
 	private String nick;
 
-	@Column(name = "TOKEN", nullable = true)
+	
 	private String token;
 
-	@Column(name = "EMAIL", nullable = false, unique = true)
-	@NotNull
+	
 	private String email;
 
-	@Column(name = "PASSWORD", nullable = false)
-	@NotNull
 	private String password;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade=CascadeType.ALL)
-	private Set<UserRole> userRole;
+	
+	private Set<UserRole> userRole= new HashSet<UserRole>(0);
 
-	@Column(name = "enabled", nullable = false)
+	
 	private boolean enabled;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author",cascade=CascadeType.ALL)
 	private Set<Post> posts;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author",cascade=CascadeType.ALL)
 	private Set<Topic> topics;
-
+	public User(){};
+	public User(String email, String password, boolean enabled) {
+		this.email = email;
+		this.password = password;
+		this.enabled = enabled;
+	}
+ 
+	public User(String email, String password, 
+		boolean enabled, Set<UserRole> userRole) {
+		this.email = email;
+		this.password = password;
+		this.enabled = enabled;
+		this.userRole = userRole;
+	}
+ 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
 	public Set<Post> getPosts() {
 		return posts;
 	}
@@ -55,6 +63,7 @@ public class User {
 		this.posts = posts;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.ALL)
 	public Set<Topic> getTopics() {
 		return topics;
 	}
@@ -62,7 +71,8 @@ public class User {
 	public void setTopics(Set<Topic> topics) {
 		this.topics = topics;
 	}
-
+	
+	@Column(name = "enabled", nullable = false)
 	public boolean isEnabled() {
 		return this.enabled;
 	}
@@ -71,18 +81,28 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public long getId() {
-		return id;
-	}
-
+	@Column(name = "nick", nullable = false, unique = true)
 	public String getNick() {
 		return nick;
 	}
 
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+	@Column(name = "PASSWORD", nullable = false)
+	@NotNull
+	public String getPassword() {
+		return password;
+	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	
+	
+	@Column(name = "EMAIL", nullable = false, unique = true)
+	@NotNull
 	public String getEmail() {
 		return email;
 	}
@@ -90,7 +110,8 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
 	public Set<UserRole> getUserRole() {
 		return this.userRole;
 	}
@@ -99,6 +120,7 @@ public class User {
 		this.userRole = userRole;
 	}
 
+	@Column(name = "TOKEN", nullable = true)
 	public String getToken() {
 		return token;
 	}
@@ -107,16 +129,15 @@ public class User {
 		this.token = token;
 	}
 
-	public String getPassword() {
-		return password;
+	@Id
+	@Column(name = "USER_ID", columnDefinition = "serial")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public long getId() {
+		return id;
 	}
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public void setNick(String nick) {
-		this.nick = nick;
 	}
 
 }

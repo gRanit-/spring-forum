@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import spring.forum.repositories.UserDAO;
 import spring.forum.repositories.UserRoleDAO;
@@ -25,8 +26,12 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 
 	@Autowired 
 	UserRoleDAO userRoleDAO;
+	
+	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(final String mail)
 			throws UsernameNotFoundException {
+		try{
+		//System.out.println("roles before");
 		spring.forum.models.User user = userDAO.getUserByEmail(mail); // Pobieramy
 																		// usera
 																		// z db
@@ -34,14 +39,20 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 																		// pomocy
 																		// Hibernate
 		System.out.println("MY MAIL::::::::::" +user.getEmail());
-		for(UserRole ur: user.getUserRole()){
+		
+		System.out.println("roles before");
+		List<UserRole> r=userRoleDAO.getRole(user);
+		System.out.println("roles after");
+		for(UserRole ur: r){
 			System.out.println("My Role "+ur.getRole());
 		}
 		
+		System.out.println("MY MAIL22222::::::::::" +user.getEmail());
+		List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
 		
-		List<GrantedAuthority> authorities = buildUserAuthority(userRoleDAO.getRole(user));
-
 		return buildUserForAuthentication(user, authorities);
+		}catch(Exception e){System.out.println(e);}
+		return null;
 	}
 
 	public UserRoleDAO getUserRoleDAO() {
@@ -63,7 +74,7 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 				true, true, true, authorities);
 	}
 
-	private List<GrantedAuthority> buildUserAuthority(List<UserRole> userRoles) {// sprawdzamy role
+	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {// sprawdzamy role
 																				// i
 																				// na
 																				// podstawie
@@ -81,7 +92,7 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 
 		List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(
 				setAuths);
-
+		System.out.println("Final");
 		return Result;
 	}
 	

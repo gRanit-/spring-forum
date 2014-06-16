@@ -17,19 +17,16 @@ public class UserRole {
 
 
 
-	@Id
-	@Column(name = "ROLE_ID", columnDefinition = "serial")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	
 	private Integer userRoleId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID", nullable = false)
+	
 	private User user;
 
-	@Column(name = "ROLE", nullable = false, length = 45)
+	
 	private String role;
 
-	
+	public UserRole(){};
 	public UserRole(Integer userRoleId, User user, String role) {
 		super();
 		this.userRoleId = userRoleId;
@@ -44,7 +41,9 @@ public class UserRole {
 		this.role = role;
 	}
 
-
+	@Id
+	@Column(name = "ROLE_ID", columnDefinition = "serial")
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public Integer getUserRoleId() {
 		return this.userRoleId;
 	}
@@ -52,7 +51,10 @@ public class UserRole {
 	public void setUserRoleId(Integer userRoleId) {
 		this.userRoleId = userRoleId;
 	}
-
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	public User getUser() {
 		return this.user;
 	}
@@ -60,7 +62,9 @@ public class UserRole {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
+	
+	
+	@Column(name = "ROLE", nullable = false, length = 45)
 	public String getRole() {
 		return this.role;
 	}
