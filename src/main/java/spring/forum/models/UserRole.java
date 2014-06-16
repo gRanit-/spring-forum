@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,12 +18,12 @@ public class UserRole {
 
 
 	@Id
-	@Column(name = "ROLE_ID", nullable = false, unique = true)
+	@Column(name = "ROLE_ID", columnDefinition = "serial")
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer userRoleId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "EMAIL", nullable = false)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
 	@Column(name = "ROLE", nullable = false, length = 45)

@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "FORUM")
 public class Forum {
 	@Id
-	@Column(name = "FORUM_ID", nullable = false, unique = true)
+	@Column(name = "FORUM_ID",columnDefinition = "serial")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 

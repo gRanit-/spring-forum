@@ -76,12 +76,16 @@
 	<bean id="userDAO" class="spring.forum.repositories.UserDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-
+<bean id="userRoleDAO" class="spring.forum.repositories.UserRoleDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 	 <bean id="userManager" class="spring.forum.services.UserManager">
 	 
 	 </bean>
 	 
+	  <bean id="roleManager" class="spring.forum.services.UserRoleManager">
 	 
+	 </bean>
 	 
 	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService">
 		<property name="userDAO" ref="userDAO" />

@@ -1,9 +1,10 @@
 package spring.forum.controllers;
 
+import java.util.HashSet;
 import java.util.Map;
 
-import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,21 @@ import org.springframework.web.servlet.ModelAndView;
 import spring.forum.models.User;
 import spring.forum.models.UserRole;
 import spring.forum.services.UserManager;
+import spring.forum.services.UserRoleManager;
 
 @Controller
 public class Main_Controller {
 	@Autowired
 	private UserManager userManager;
+	@Autowired
+	private	 UserRoleManager roleManager;
+	
+	
 	
 	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage() {
+	public ModelAndView defaultPage(HttpSession session) {
+		if(session==null)
+			return new ModelAndView();
 		System.out.println("WELCOME!!");
 		ModelAndView model = new ModelAndView();
 		model.addObject("title", "Spring Security + Hibernate Example");
@@ -59,9 +67,10 @@ public class Main_Controller {
 			@RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "logout", required = false) String logout,
 			HttpServletRequest request) {
-
+		System.out.println(request.getAttribute("username"));
 		ModelAndView model = new ModelAndView();
 		if (error != null) {
+			System.out.println("login error");
 			model.addObject("error",
 					getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
 		}
@@ -93,6 +102,13 @@ public class Main_Controller {
 		return error;
 	}
 
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(HttpServletRequest request) {
+		return "j_spring_security_logout";
+
+	}
+	
+	
 	// for 403 access denied page
 	@RequestMapping(value = "/403", method = RequestMethod.GET)
 	public ModelAndView accesssDenied() {
@@ -116,8 +132,6 @@ public class Main_Controller {
 	}
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	public ModelAndView createNewUser(Map<String, Object> model) {
-		        //User userForm = new User();    
-		       // model.put("userForm", userForm);
 		return new ModelAndView("add_user_form","user",new User());
 	}
 			
@@ -126,10 +140,17 @@ public class Main_Controller {
 			final @Valid @ModelAttribute spring.forum.models.User user,
 			final BindingResult result,
 			final SessionStatus status) {
+		
 		user.setToken("token");
 		user.setEnabled(true);
-		user.getUserRole().add(new UserRole(user, "ROLE_USER"));
+		UserRole role=new UserRole(user, "ROLE_USER");
+		if(user.getUserRole()==null){
+			user.setUserRole(new HashSet<UserRole>());
+			user.getUserRole().add(role);
+		}
+		
 		userManager.addUser(user);
+		
 		//ModelAndView model =new ModelAndView();
 		System.out.println(user.getEmail());
 		return login(null, null, null);

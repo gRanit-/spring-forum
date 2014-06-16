@@ -2,6 +2,7 @@ package spring.forum.models;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +19,7 @@ import javax.persistence.Table;
 public class Topic {
 
 	@Id
-	@Column(name = "TOPIC_ID", nullable = false, unique = true)
+	@Column(name = "TOPIC_ID",columnDefinition = "serial")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
@@ -32,10 +33,10 @@ public class Topic {
 	private String date;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "EMAIL", nullable = false)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	private User author;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "topic")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "topic",cascade=CascadeType.ALL)
 	private Set<Post> posts;
 
 	@ManyToOne(fetch = FetchType.LAZY)

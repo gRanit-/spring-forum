@@ -11,6 +11,11 @@ import spring.forum.models.User;
 @Repository
 public class UserDAO {
 	
+	
+
+	@Autowired
+	private SessionFactory sessionFactory;
+
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
@@ -18,10 +23,8 @@ public class UserDAO {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-
-	@Autowired
-	private SessionFactory sessionFactory;
-
+	
+	
 	public void addUser(User user) {
 		this.sessionFactory.getCurrentSession().save(user);
 	}

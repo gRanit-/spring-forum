@@ -13,9 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import spring.forum.repositories.UserDAO;
+import spring.forum.repositories.UserRoleDAO;
 
 @Service("userDetailsService")
 public class AuthenticationUserDetailsService implements UserDetailsService {
@@ -23,6 +23,8 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UserDAO userDAO;
 
+	@Autowired 
+	UserRoleDAO userRoleDAO;
 	public UserDetails loadUserByUsername(final String mail)
 			throws UsernameNotFoundException {
 		spring.forum.models.User user = userDAO.getUserByEmail(mail); // Pobieramy
@@ -31,11 +33,23 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 																		// przy
 																		// pomocy
 																		// Hibernate
-
-		List<GrantedAuthority> authorities = buildUserAuthority(user
-				.getUserRole());
+		System.out.println("MY MAIL::::::::::" +user.getEmail());
+		for(UserRole ur: user.getUserRole()){
+			System.out.println("My Role "+ur.getRole());
+		}
+		
+		
+		List<GrantedAuthority> authorities = buildUserAuthority(userRoleDAO.getRole(user));
 
 		return buildUserForAuthentication(user, authorities);
+	}
+
+	public UserRoleDAO getUserRoleDAO() {
+		return userRoleDAO;
+	}
+
+	public void setUserRoleDAO(UserRoleDAO userRoleDAO) {
+		this.userRoleDAO = userRoleDAO;
 	}
 
 	private User buildUserForAuthentication(spring.forum.models.User user, // Tworzymy
@@ -49,7 +63,7 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 				true, true, true, authorities);
 	}
 
-	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {// sprawdzamy role
+	private List<GrantedAuthority> buildUserAuthority(List<UserRole> userRoles) {// sprawdzamy role
 																				// i
 																				// na
 																				// podstawie
@@ -61,6 +75,7 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 
 		// Build user's authorities
 		for (UserRole userRole : userRoles) {
+			System.out.println(userRole.getRole());
 			setAuths.add(new SimpleGrantedAuthority(userRole.getRole()));
 		}
 

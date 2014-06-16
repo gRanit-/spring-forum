@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class Post {
 
 	@Id
-	@Column(name = "POST_ID")
+	@Column(name = "POST_ID",columnDefinition = "serial")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
@@ -27,7 +27,7 @@ public class Post {
 	private String creatonDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "EMAIL", nullable = false)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	private User author;
 
 	@ManyToOne(fetch = FetchType.LAZY)

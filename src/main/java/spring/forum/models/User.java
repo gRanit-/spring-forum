@@ -1,10 +1,8 @@
 package spring.forum.models;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import spring.forum.models.UserRole;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "USERS")
 public class User {
 	@Id
-	@Column(name = "USER_ID", nullable = false, unique = true)
+	@Column(name = "USER_ID",columnDefinition = "serial")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
@@ -37,16 +35,16 @@ public class User {
 	@NotNull
 	private String password;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade=CascadeType.ALL)
 	private Set<UserRole> userRole;
 
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author",cascade=CascadeType.ALL)
 	private Set<Post> posts;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author",cascade=CascadeType.ALL)
 	private Set<Topic> topics;
 
 	public Set<Post> getPosts() {
