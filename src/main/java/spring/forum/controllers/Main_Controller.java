@@ -1,6 +1,6 @@
 package spring.forum.controllers;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,16 +15,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import spring.forum.models.Post;
+import spring.forum.models.Topic;
 import spring.forum.models.User;
 import spring.forum.models.UserRole;
+import spring.forum.repositories.PostDAO;
+import spring.forum.repositories.TopicDAO;
+import spring.forum.repositories.UserDAO;
 import spring.forum.services.UserManager;
 import spring.forum.services.UserRoleManager;
 
@@ -34,6 +41,12 @@ public class Main_Controller {
 	private UserManager userManager;
 	@Autowired
 	private	 UserRoleManager roleManager;
+	@Autowired
+	private	 TopicDAO topicDAO;
+	@Autowired
+	private	 PostDAO postDAO;
+	@Autowired
+	private	 UserDAO userDAO;
 	
 	
 	
@@ -50,6 +63,7 @@ public class Main_Controller {
 
 	}
 
+	
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
 	public ModelAndView adminPage() {
 
@@ -160,4 +174,37 @@ public class Main_Controller {
 		return "login";
 
 	}
+	@RequestMapping(value = "/createTopic", method = RequestMethod.GET)
+	public ModelAndView createTopic(Map<String, Object> model){
+		return new ModelAndView("add_topic_form","topic",new Topic());
+		
+	}
+	
+	@RequestMapping(value = "/createTopic", method = RequestMethod.POST)
+	public String createTopic(final @Valid @ModelAttribute spring.forum.models.Topic topic,
+			final BindingResult result,
+			final SessionStatus status,Authentication authentication){
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		User usr=userDAO.getUserByEmail(userDetails.getUsername());
+		topic.setAuthor(usr);
+		topicDAO.addTopic(topic);
+		
+		return "";
+		
+	}
+	
+	@RequestMapping(value = "/showTopic/{topicID}", method = RequestMethod.POST)
+	public ModelAndView showTopic(@PathVariable String topicID,Model model){
+		Topic topic=topicDAO.getTopicByID(Integer.parseInt(topicID));
+		List<Post> posts=postDAO.getAllPostsForTopic(topic);
+		model.addAttribute("topic", topic);
+		
+		
+		model.addAttribute("posts",posts);
+		
+		return new ModelAndView("add_topic_form"); 
+			
+		
+	}
+	
 }

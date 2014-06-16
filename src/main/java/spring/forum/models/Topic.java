@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -37,7 +38,7 @@ public class Topic {
 	private User author;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "topic",cascade=CascadeType.ALL)
-	private Set<Post> posts;
+	private Set<Post> posts=new HashSet<Post>(0);
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FORUM_ID", nullable = false)

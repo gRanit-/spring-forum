@@ -79,6 +79,14 @@
 <bean id="userRoleDAO" class="spring.forum.repositories.UserRoleDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	<bean id="postManager" class="spring.forum.services.PostManager">
+	 
+	 </bean>
+	 <bean id="topicManager" class="spring.forum.services.TopicManager">
+	 
+	 </bean>
+	
+	
 	 <bean id="userManager" class="spring.forum.services.UserManager">
 	 
 	 </bean>

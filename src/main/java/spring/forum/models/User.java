@@ -36,9 +36,9 @@ public class User {
 	
 	private boolean enabled;
 
-	private Set<Post> posts;
+	private Set<Post> posts=new HashSet<Post>(0);
 
-	private Set<Topic> topics;
+	private Set<Topic> topics=new HashSet<Topic>(0);
 	public User(){};
 	public User(String email, String password, boolean enabled) {
 		this.email = email;
