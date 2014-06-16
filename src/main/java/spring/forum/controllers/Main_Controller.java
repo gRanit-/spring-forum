@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.commons.lang.time.DateUtils;
+
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +36,7 @@ import spring.forum.services.TopicManager;
 import spring.forum.services.UserManager;
 import spring.forum.services.PostManager;
 import spring.forum.services.UserRoleManager;
-
+import spring.forum.controllers.DateUtils;
 @Controller
 public class Main_Controller {
 	@Autowired
@@ -187,20 +187,38 @@ public class Main_Controller {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		User usr=userManager.getUserByEmail(userDetails.getUsername());
 		topic.setAuthor(usr);
+		topic.setDate(DateUtils.getCurrentDate());
 		topicManager.addTopic(topic);
 		
 		return "showTopic/"+topic.getId();
 		
 	}
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/deleteTopic/{topicID}", method = RequestMethod.GET)
+	public String deleteTopic(@PathVariable String topicID){
+		topicManager.deleteTopic(Integer.parseInt(topicID));
+		return "welcome";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/deletePost/{postID}", method = RequestMethod.GET)
+	public String deletePost(@PathVariable String postID){
+		postManager.deletePost(Integer.parseInt(postID));
+		return "welcome";
+	}
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/deleteUser/{userID}", method = RequestMethod.GET)
+	public String deleteUser(@PathVariable String userID){
+		userManager.deleteUser(Integer.parseInt(userID));
+		return "welcome";
+	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = "/showTopic/{topicID}", method = RequestMethod.GET)
 	public ModelAndView showTopic(@PathVariable String topicID,Model model){
 		Topic topic=topicManager.getTopicByID(Integer.parseInt(topicID));
 		List<Post> posts=postManager.getAllPostsForTopic(topic);
-		//Hibernate.initialize(topic);
-		//for(Post p :posts)
-		//	Hibernate.initialize(p);
-		//Hibernate.initialize(posts);
+;
 		model.addAttribute("topic", topic);
 		model.addAttribute("posts",posts);
 		

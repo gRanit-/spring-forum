@@ -41,9 +41,9 @@ public class TopicDAO {
 	}
 	
 	
-	public void deleteTopic(long userId) {
+	public void deleteTopic(long topiId) {
 		Topic topic = (Topic) this.sessionFactory.getCurrentSession().load(
-				Topic.class, userId);
+				Topic.class, topiId);
 		if (topic != null) {
 			this.sessionFactory.getCurrentSession().delete(topic);
 		}

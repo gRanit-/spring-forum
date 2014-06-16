@@ -54,7 +54,7 @@ public class User {
 		this.userRole = userRole;
 	}
  
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	public Set<Post> getPosts() {
 		return posts;
 	}
@@ -63,7 +63,7 @@ public class User {
 		this.posts = posts;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	public Set<Topic> getTopics() {
 		return topics;
 	}
