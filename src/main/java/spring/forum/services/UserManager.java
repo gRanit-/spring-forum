@@ -50,7 +50,15 @@ public class UserManager{
     public void updateUser(User user) {
         userDAO.updateUser(user);
     }
-
+    @Transactional
+    public User getUserWithEmail(String email) {
+    	return userDAO.getUserWithEmail(email);
+    	
+    }
+    @Transactional
+    public User getUserByEmail(String email) {
+    	return userDAO.getUserByEmail(email);
+    }
     @Transactional
     
     public void updateUserPassword(String login, String newPassword) {

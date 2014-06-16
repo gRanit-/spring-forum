@@ -29,10 +29,9 @@ import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
 import spring.forum.models.UserRole;
-import spring.forum.repositories.PostDAO;
-import spring.forum.repositories.TopicDAO;
-import spring.forum.repositories.UserDAO;
+import spring.forum.services.TopicManager;
 import spring.forum.services.UserManager;
+import spring.forum.services.PostManager;
 import spring.forum.services.UserRoleManager;
 
 @Controller
@@ -42,11 +41,11 @@ public class Main_Controller {
 	@Autowired
 	private	 UserRoleManager roleManager;
 	@Autowired
-	private	 TopicDAO topicDAO;
+	private	 TopicManager topicManager;
 	@Autowired
-	private	 PostDAO postDAO;
-	@Autowired
-	private	 UserDAO userDAO;
+	private	 PostManager postManager;
+//	@Autowired
+//	private	 UserDAO userDAO;
 	
 	
 	
@@ -185,9 +184,9 @@ public class Main_Controller {
 			final BindingResult result,
 			final SessionStatus status,Authentication authentication){
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		User usr=userDAO.getUserByEmail(userDetails.getUsername());
+		User usr=userManager.getUserByEmail(userDetails.getUsername());
 		topic.setAuthor(usr);
-		topicDAO.addTopic(topic);
+		topicManager.addTopic(topic);
 		
 		return "";
 		
@@ -195,14 +194,13 @@ public class Main_Controller {
 	
 	@RequestMapping(value = "/showTopic/{topicID}", method = RequestMethod.POST)
 	public ModelAndView showTopic(@PathVariable String topicID,Model model){
-		Topic topic=topicDAO.getTopicByID(Integer.parseInt(topicID));
-		List<Post> posts=postDAO.getAllPostsForTopic(topic);
+		Topic topic=topicManager.getTopicByID(Integer.parseInt(topicID));
+		List<Post> posts=postManager.getAllPostsForTopic(topic);
+		
 		model.addAttribute("topic", topic);
-		
-		
 		model.addAttribute("posts",posts);
 		
-		return new ModelAndView("add_topic_form"); 
+		return new ModelAndView("show_topic"); 
 			
 		
 	}

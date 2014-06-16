@@ -9,6 +9,6 @@
         <mapping class="spring.forum.models.UserRole"></mapping>
     	<mapping class="spring.forum.models.Post"></mapping>
     	<mapping class="spring.forum.models.Topic"></mapping>
-    	<mapping class="spring.forum.models.Forum"></mapping>
+    	<!--  <mapping class="spring.forum.models.Forum"></mapping>-->
     </session-factory>
 </hibernate-configuration>
