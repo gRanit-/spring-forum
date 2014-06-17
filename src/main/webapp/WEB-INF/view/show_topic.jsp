@@ -19,7 +19,7 @@
 	<tr>
 	
 		<td>${post.creationDate}</td>
-		<td>${post.author}</td>
+		<td>${post.author.email}</td>
 		<td>${post.text}</td>
 		</tr>
 	</table>
