@@ -3,7 +3,11 @@ package spring.forum.repositories;
 import java.io.IOException;
 import java.util.List;
 
-
+import net.spy.memcached.AddrUtil;
+import net.spy.memcached.ConnectionFactoryBuilder;
+import net.spy.memcached.MemcachedClient;
+import net.spy.memcached.auth.AuthDescriptor;
+import net.spy.memcached.auth.PlainCallbackHandler;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +37,7 @@ public class TopicDAO {
 		 return (Topic) this.sessionFactory.getCurrentSession().get(Topic.class, id);
 	}
 	public List<Topic> getAllTopics() {
-	/*	AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
+		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
 		            System.getenv("MEMCACHIER_PASSWORD")));
 		
@@ -49,7 +53,7 @@ public class TopicDAO {
 		      System.err.println("Couldn't create a connection to MemCachier: \nIOException "
 		              + ioe.getMessage());
 		    }
-		*/
+		
 		return this.sessionFactory.getCurrentSession()
 				.createQuery("from Topic").list();
 		
