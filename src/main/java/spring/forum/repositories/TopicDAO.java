@@ -50,13 +50,13 @@ public class TopicDAO {
 		              .setAuthDescriptor(ad).build(),
 		          AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 		      
-		      topics=(List<Topic>)mc.get("topics");
-		      if(topics==null){
 		    	  topics=this.sessionFactory.getCurrentSession()
 							.createQuery("from Topic").list();
 		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
 		    	  mc.set("topics", 0, topics);
-		      }
+			      topics=(List<Topic>)mc.get("topics");
+
+		      
 		    } catch (IOException ioe) {
 		      System.err.println("Couldn't create a connection to MemCachier: \nIOException "
 		              + ioe.getMessage());
