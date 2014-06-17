@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "TOPICS")
-public class Topic {
+public class Topic implements Serializable{
 
 	@Id
 	@Column(name = "TOPIC_ID",columnDefinition = "serial")
