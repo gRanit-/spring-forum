@@ -1,6 +1,7 @@
 package spring.forum.repositories;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.spy.memcached.AddrUtil;
@@ -38,7 +39,7 @@ public class TopicDAO {
 	}
 	public List<Topic> getAllTopics() {
 		MemcachedClient mc=null;
-		List<Topic> topics=null;
+		LinkedList<Topic> topics=null;
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
 		            System.getenv("MEMCACHIER_PASSWORD")));
@@ -50,7 +51,7 @@ public class TopicDAO {
 		              .setAuthDescriptor(ad).build(),
 		          AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 		      
-		    	  topics=this.sessionFactory.getCurrentSession()
+		    	  topics=(LinkedList<Topic>) this.sessionFactory.getCurrentSession()
 							.createQuery("from Topic").list();
 		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
 		    	  //mc.set("topics", 0, topics);
