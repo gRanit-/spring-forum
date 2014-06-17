@@ -37,11 +37,14 @@ public class TopicDAO {
 		 return (Topic) this.sessionFactory.getCurrentSession().get(Topic.class, id);
 	}
 	public List<Topic> getAllTopics() {
+		
+		System.out.print(System.getenv("MEMCACHIER_USERNAME")+"   -----    " +
+		            System.getenv("MEMCACHIER_PASSWORD"));
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
 		            System.getenv("MEMCACHIER_PASSWORD")));
 		
-		try {
+	/*	try {
 		      MemcachedClient mc = new MemcachedClient(
 		          new ConnectionFactoryBuilder()
 		              .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
@@ -53,7 +56,7 @@ public class TopicDAO {
 		      System.err.println("Couldn't create a connection to MemCachier: \nIOException "
 		              + ioe.getMessage());
 		    }
-		
+		*/
 		return this.sessionFactory.getCurrentSession()
 				.createQuery("from Topic").list();
 		
