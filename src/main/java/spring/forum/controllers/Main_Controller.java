@@ -256,7 +256,7 @@ public class Main_Controller {
 		post.setTopic(topic);
 		postManager.addPost(post);
 
-		return "show_topic/"+topic.getId(); 
+		return "showAllTopics"; 
 	}
 	
 }

@@ -29,7 +29,7 @@
 	 <table class="addPostTable">
 
         <tr>
-            <td><label for="text">email</label></td>
+            <td><label for="text">Post here</label></td>
             <td><form:input path="text" id="text" cssClass="form-control"/></td>
         </tr>
 
