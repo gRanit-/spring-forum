@@ -31,21 +31,15 @@ public class AuthenticationUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(final String mail)
 			throws UsernameNotFoundException {
 		try{
-		//System.out.println("roles before");
+		
 		spring.forum.models.User user = userDAO.getUserByEmail(mail); // Pobieramy
 																		// usera
 																		// z db
 																		// przy
 																		// pomocy
 																		// Hibernate
-		System.out.println("MY MAIL::::::::::" +user.getEmail());
 		
-		System.out.println("roles before");
 		List<UserRole> r=userRoleDAO.getRole(user);
-		System.out.println("roles after");
-		for(UserRole ur: r){
-			System.out.println("My Role "+ur.getRole());
-		}
 		
 		System.out.println("MY MAIL22222::::::::::" +user.getEmail());
 		List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
