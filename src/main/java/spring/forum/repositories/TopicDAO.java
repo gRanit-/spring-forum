@@ -53,8 +53,8 @@ public class TopicDAO {
 		    	  topics=this.sessionFactory.getCurrentSession()
 							.createQuery("from Topic").list();
 		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
-		    	  //mc.set("topics", 0, topics);
-			      //topics=(List<Topic>)mc.get("topics");
+		    	  mc.set("topics", 0, topics);
+			      topics=(List<Topic>)mc.get("topics");
 
 		      
 		    } catch (IOException ioe) {
