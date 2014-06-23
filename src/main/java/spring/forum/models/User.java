@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "USERS")
-public class User {
+public class User implements Serializable{
 
 	private long id;
 
