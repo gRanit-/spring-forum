@@ -35,6 +35,7 @@ public class PostDAO implements Serializable {
 
 	public void addPost(Post post) {
 		this.sessionFactory.getCurrentSession().save(post);
+		
 		MemcachedClient memcachedClient = null;
 		List<Post> posts = null;
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
@@ -49,9 +50,12 @@ public class PostDAO implements Serializable {
 							.setAuthDescriptor(ad).build(),
 					AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 
-			posts = (List<Post>) this.sessionFactory.getCurrentSession()
-					.createQuery("from Post").list();
-			memcachedClient.set("posts", 0, posts);
+	//		posts = (List<Post>) this.sessionFactory.getCurrentSession()
+	//				.createQuery("from Post").list();
+		///	memcachedClient.set("posts", 0, posts);
+			List<Topic> topics = (List<Topic>) this.sessionFactory.getCurrentSession()
+					.createQuery("from Topic").list();
+			memcachedClient.set("topics", 0, posts);
 
 		} catch (IOException ioe) {
 			System.err
@@ -78,7 +82,7 @@ public class PostDAO implements Serializable {
 							.setAuthDescriptor(ad).build(),
 					AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 
-			posts = (List<Post>) memcachedClient.get("topics");
+			posts = (List<Post>) memcachedClient.get("posts");
 			if (posts == null) {
 				posts = (List<Post>) this.sessionFactory.getCurrentSession()
 						.createQuery("from Post").list();
