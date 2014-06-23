@@ -50,6 +50,7 @@
 
 
 	<!--Session factory for hibernate -->
+
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="dataSource" ref="datasource"></property>

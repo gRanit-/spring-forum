@@ -41,7 +41,7 @@ public class TopicManager {
 	}
 
 	@Transactional
-	public List<Post> getAllTopicsForUser(User user) {
+	public List<Topic> getAllTopicsForUser(User user) {
 		return topicDAO.getAllTopicsForUser(user);
 	}
 

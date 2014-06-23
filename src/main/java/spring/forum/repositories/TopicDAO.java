@@ -19,7 +19,7 @@ import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
 
-public class TopicDAO implements Serializable{
+public class TopicDAO implements Serializable {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -34,54 +34,112 @@ public class TopicDAO implements Serializable{
 
 	public void addTopic(Topic topic) {
 		this.sessionFactory.getCurrentSession().save(topic);
-	}
 
-	public Topic getTopicByID(long id){
-		 return (Topic) this.sessionFactory.getCurrentSession().get(Topic.class, id);
-	}
-	@SuppressWarnings("unchecked")
-	public List<Topic> getAllTopics() {
-		MemcachedClient memcachedClient=null;
-		List<Topic> topics=null;
+		MemcachedClient memcachedClient = null;
+		List<Topic> topics = null;
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
-		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
-		            System.getenv("MEMCACHIER_PASSWORD")));
-		
+				new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+						System.getenv("MEMCACHIER_PASSWORD")));
+
 		try {
 			memcachedClient = new MemcachedClient(
-		          new ConnectionFactoryBuilder()
-		              .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
-		              .setAuthDescriptor(ad).build(),
-		          AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
-		      
-		     topics=(List<Topic>)memcachedClient.get("topics");
-		    if(topics==null) {		  
-		    		  topics=(List<Topic>) this.sessionFactory.getCurrentSession()
-							.createQuery("from Topic").list();
-		    		  memcachedClient.set("topics", 0, topics);
-		    }	
-		    
-			
+					new ConnectionFactoryBuilder()
+							.setProtocol(
+									ConnectionFactoryBuilder.Protocol.BINARY)
+							.setAuthDescriptor(ad).build(),
+					AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 
-		      
-		    } catch (IOException ioe) {
-		      System.err.println("Couldn't create a connection to MemCachier: \nIOException "
-		              + ioe.getMessage());
-		    }
-		
-			return topics;
-		
-		
+			// topics=(List<Topic>)memcachedClient.get("topics");
 
-		
+			topics = (List<Topic>) this.sessionFactory.getCurrentSession()
+					.createQuery("from Topic").list();
+			memcachedClient.set("topics", 0, topics);
+
+		} catch (IOException ioe) {
+			System.err
+					.println("Couldn't create a connection to MemCachier: \nIOException "
+							+ ioe.getMessage());
+		}
+
 	}
-	
-	public List<Post> getAllTopicsForUser(User user){
+
+	public Topic getTopicByID(long id) {
+		MemcachedClient memcachedClient = null;
+		List<Topic> topics = null;
+		Topic topic = null;
+		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
+				new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+						System.getenv("MEMCACHIER_PASSWORD")));
+
+		try {
+			memcachedClient = new MemcachedClient(
+					new ConnectionFactoryBuilder()
+							.setProtocol(
+									ConnectionFactoryBuilder.Protocol.BINARY)
+							.setAuthDescriptor(ad).build(),
+					AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
+
+			topics = (List<Topic>) memcachedClient.get("topics");
+			if (topics == null) {
+				topics = (List<Topic>) this.sessionFactory.getCurrentSession()
+						.createQuery("from Topic").list();
+				memcachedClient.set("topics", 0, topics);
+			}
+
+			for (Topic t : topics)
+				if (t.getId() == id) {
+					topic = t;
+					break;
+				}
+
+		} catch (IOException ioe) {
+			System.err
+					.println("Couldn't create a connection to MemCachier: \nIOException "
+							+ ioe.getMessage());
+		}
+
+		return topic;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Topic> getAllTopics() {
+		MemcachedClient memcachedClient = null;
+		List<Topic> topics = null;
+		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
+				new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+						System.getenv("MEMCACHIER_PASSWORD")));
+
+		try {
+			memcachedClient = new MemcachedClient(
+					new ConnectionFactoryBuilder()
+							.setProtocol(
+									ConnectionFactoryBuilder.Protocol.BINARY)
+							.setAuthDescriptor(ad).build(),
+					AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
+
+			topics = (List<Topic>) memcachedClient.get("topics");
+			if (topics == null) {
+				topics = (List<Topic>) this.sessionFactory.getCurrentSession()
+						.createQuery("from Topic").list();
+				memcachedClient.set("topics", 0, topics);
+			}
+
+		} catch (IOException ioe) {
+			System.err
+					.println("Couldn't create a connection to MemCachier: \nIOException "
+							+ ioe.getMessage());
+		}
+
+		return topics;
+
+	}
+
+	public List<Topic> getAllTopicsForUser(User user) {
 		return this.sessionFactory.getCurrentSession()
-				.createQuery("from Topic p where p.author="+user.getId()).list();
+				.createQuery("from Topic p where p.author=" + user.getId())
+				.list();
 	}
-	
-	
+
 	public void deleteTopic(long topiId) {
 		Topic topic = (Topic) this.sessionFactory.getCurrentSession().load(
 				Topic.class, topiId);
