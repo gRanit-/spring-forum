@@ -39,9 +39,10 @@ public class TopicDAO implements Serializable{
 	public Topic getTopicByID(long id){
 		 return (Topic) this.sessionFactory.getCurrentSession().get(Topic.class, id);
 	}
+	@SuppressWarnings("unchecked")
 	public ArrayList<Topic> getAllTopics() {
 		MemcachedClient mc=null;
-		ArrayList<Topic> topics=null;
+		ArrayList<Topic> topics=new ArrayList<Topic>();
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
 		            System.getenv("MEMCACHIER_PASSWORD")));
@@ -57,7 +58,7 @@ public class TopicDAO implements Serializable{
 							.createQuery("from Topic").list();
 		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
 		    	  mc.set("topics", 0, topics);
-			      topics=(ArrayList<Topic>)mc.get("topics");
+			      //topics=(ArrayList<Topic>)mc.get("topics");
 
 		      
 		    } catch (IOException ioe) {
