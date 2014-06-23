@@ -37,7 +37,8 @@
 
 	</sec:authorize>
 	<c:if test="${pageContext.request.userPrincipal.name == null}">
-		<h2><a href="../login">"Login" </a></h2>
+		<h2><a href="../login">Login </a></h2><br>
+		<h2><a href="../addUser">"Register" </a></h2>
 	</c:if>
 </body>
 </html>
