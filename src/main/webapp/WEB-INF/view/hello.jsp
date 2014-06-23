@@ -9,7 +9,8 @@
 	<sec:authorize access="hasRole('ROLE_USER')">
 		<!-- For login user -->
 		
-		<a href="../addTopic">"Add Topic" </a>
+		<a href="../addTopic">Add Topic </a>
+		<br>
 		<a href="../showAllTopics">"Show All Topics" </a>
 		
 		<c:url value="/j_spring_security_logout" var="logoutUrl" />
@@ -29,9 +30,14 @@
 				User : ${pageContext.request.userPrincipal.name} | <a
 					href="javascript:formSubmit()"> Logout</a>
 			</h2>
+			
 		</c:if>
-
+	
+		
 
 	</sec:authorize>
+	<c:if test="${pageContext.request.userPrincipal.name == null}">
+		<h2><a href="../login">"Login" </a></h2>
+	</c:if>
 </body>
 </html>

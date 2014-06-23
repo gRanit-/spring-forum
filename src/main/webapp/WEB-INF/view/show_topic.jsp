@@ -9,6 +9,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 </head>
 <body>
+
+<a href="../welcome">"Come back to main page" </a><br>
 	<b>
 	
 	${topic.title}<br>
