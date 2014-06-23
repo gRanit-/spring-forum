@@ -1,5 +1,6 @@
 package spring.forum.repositories;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -11,7 +12,7 @@ import spring.forum.models.Topic;
 import spring.forum.models.User;
 
 @Repository
-public class PostDAO {
+public class PostDAO implements Serializable {
 
 	@Autowired
 	private SessionFactory sessionFactory;

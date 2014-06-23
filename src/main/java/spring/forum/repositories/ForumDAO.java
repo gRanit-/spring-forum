@@ -1,5 +1,7 @@
 package spring.forum.repositories;
 
-public class ForumDAO {
+import java.io.Serializable;
+
+public class ForumDAO implements Serializable{
 
 }

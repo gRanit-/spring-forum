@@ -1,6 +1,7 @@
 package spring.forum.repositories;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import net.spy.memcached.AddrUtil;
@@ -16,7 +17,7 @@ import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
 
-public class TopicDAO {
+public class TopicDAO implements Serializable{
 
 	@Autowired
 	private SessionFactory sessionFactory;

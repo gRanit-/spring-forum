@@ -1,5 +1,6 @@
 package spring.forum.repositories;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import spring.forum.models.User;
 
 @Repository
-public class UserDAO {
+public class UserDAO implements Serializable{
 	
 	
 
