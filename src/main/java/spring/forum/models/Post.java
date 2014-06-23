@@ -1,5 +1,7 @@
 package spring.forum.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "POSTS")
-public class Post  {
+public class Post implements Serializable {
 
 	@Id
 	@Column(name = "POST_ID",columnDefinition = "serial")

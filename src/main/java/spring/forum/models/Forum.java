@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "FORUM")
-public class Forum {
+public class Forum implements Serializable {
 	@Id
 	@Column(name = "FORUM_ID",columnDefinition = "serial")
 	@GeneratedValue(strategy = GenerationType.AUTO)

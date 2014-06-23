@@ -1,5 +1,6 @@
 package spring.forum.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,7 @@ import spring.forum.repositories.UserDAO;
 import spring.forum.repositories.UserRoleDAO;
 
 @Service("userDetailsService")
-public class AuthenticationUserDetailsService implements UserDetailsService {
+public class AuthenticationUserDetailsService implements UserDetailsService, Serializable {
 
 	@Autowired
 	private UserDAO userDAO;
