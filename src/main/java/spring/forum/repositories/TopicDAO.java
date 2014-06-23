@@ -2,6 +2,7 @@ package spring.forum.repositories;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,9 +39,9 @@ public class TopicDAO implements Serializable{
 	public Topic getTopicByID(long id){
 		 return (Topic) this.sessionFactory.getCurrentSession().get(Topic.class, id);
 	}
-	public LinkedList<Topic> getAllTopics() {
+	public ArrayList<Topic> getAllTopics() {
 		MemcachedClient mc=null;
-		LinkedList<Topic> topics=null;
+		ArrayList<Topic> topics=null;
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
 		            System.getenv("MEMCACHIER_PASSWORD")));
@@ -52,11 +53,11 @@ public class TopicDAO implements Serializable{
 		              .setAuthDescriptor(ad).build(),
 		          AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 		      
-		    	  topics=(LinkedList<Topic>) this.sessionFactory.getCurrentSession()
+		    	  topics=(ArrayList<Topic>) this.sessionFactory.getCurrentSession()
 							.createQuery("from Topic").list();
 		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
 		    	  mc.set("topics", 0, topics);
-			      topics=(LinkedList<Topic>)mc.get("topics");
+			      topics=(ArrayList<Topic>)mc.get("topics");
 
 		      
 		    } catch (IOException ioe) {
