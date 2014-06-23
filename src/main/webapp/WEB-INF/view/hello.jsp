@@ -8,9 +8,12 @@
 
 	<sec:authorize access="hasRole('ROLE_USER')">
 		<!-- For login user -->
-		<c:url value="/addTopic" var="Add Topic" />
-		<c:url value="/showAllTopics" var="Show All Topics" />
+		
+		<a href="../addTopic">"Add Topic" </a>
+		<a href="../showAllTopics">"Show All Topics" </a>
+		
 		<c:url value="/j_spring_security_logout" var="logoutUrl" />
+		
 		<form action="${logoutUrl}" method="post" id="logoutForm">
 			<input type="hidden" name="${_csrf.parameterName}"
 				value="${_csrf.token}" />
