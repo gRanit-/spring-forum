@@ -55,7 +55,7 @@ public class PostDAO implements Serializable {
 		///	memcachedClient.set("posts", 0, posts);
 			List<Topic> topics = (List<Topic>) this.sessionFactory.getCurrentSession()
 					.createQuery("from Topic").list();
-			memcachedClient.set("topics", 0, posts);
+			memcachedClient.set("topics", 0, topics);
 
 		} catch (IOException ioe) {
 			System.err
