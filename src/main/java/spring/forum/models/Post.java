@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "POSTS")
-public class Post {
+public class Post  {
 
 	@Id
 	@Column(name = "POST_ID",columnDefinition = "serial")
