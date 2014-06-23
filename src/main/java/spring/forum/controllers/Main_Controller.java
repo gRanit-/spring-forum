@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -32,11 +30,10 @@ import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
 import spring.forum.models.UserRole;
+import spring.forum.services.PostManager;
 import spring.forum.services.TopicManager;
 import spring.forum.services.UserManager;
-import spring.forum.services.PostManager;
 import spring.forum.services.UserRoleManager;
-import spring.forum.controllers.DateUtils;
 @Controller
 public class Main_Controller {
 	@Autowired
@@ -181,7 +178,7 @@ public class Main_Controller {
 	}
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = "/addTopic", method = RequestMethod.POST)
-	public String createTopic(final @Valid @ModelAttribute spring.forum.models.Topic topic,
+	public ModelAndView createTopic(final @Valid @ModelAttribute spring.forum.models.Topic topic,
 			final BindingResult result,
 			final SessionStatus status,Authentication authentication){
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -190,7 +187,7 @@ public class Main_Controller {
 		topic.setDate(DateUtils.getCurrentDate());
 		topicManager.addTopic(topic);
 		
-		return "showTopic/"+topic.getId();
+		return new ModelAndView("show_topic","post",new Post()); 	
 		
 	}
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -243,10 +240,10 @@ public class Main_Controller {
 	
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = "/addPostToTopic/{topicID}", method = RequestMethod.POST)
-	public String addPost(@PathVariable String topicID,
+	public ModelAndView addPost(@PathVariable String topicID,
 			final @Valid @ModelAttribute spring.forum.models.Post post,
 			final BindingResult result,
-			final SessionStatus status,Authentication authentication){
+			final SessionStatus status,Authentication authentication, Model model){
 		
 		Topic topic=topicManager.getTopicByID(Integer.parseInt(topicID));
 		post.setCreationDate(spring.forum.controllers.DateUtils.getCurrentDate());
@@ -256,7 +253,7 @@ public class Main_Controller {
 		post.setTopic(topic);
 		postManager.addPost(post);
 
-		return "showAllTopics"; 
+		return showAllTopics(model);
 	}
 	
 }
