@@ -35,14 +35,36 @@ public class PostDAO implements Serializable {
 
 	public void addPost(Post post) {
 		this.sessionFactory.getCurrentSession().save(post);
+		MemcachedClient memcachedClient = null;
+		List<Post> posts = null;
+		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
+				new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+						System.getenv("MEMCACHIER_PASSWORD")));
+
+		try {
+			memcachedClient = new MemcachedClient(
+					new ConnectionFactoryBuilder()
+							.setProtocol(
+									ConnectionFactoryBuilder.Protocol.BINARY)
+							.setAuthDescriptor(ad).build(),
+					AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
+
+			posts = (List<Post>) this.sessionFactory.getCurrentSession()
+					.createQuery("from Post").list();
+			memcachedClient.set("posts", 0, posts);
+
+		} catch (IOException ioe) {
+			System.err
+					.println("Couldn't create a connection to MemCachier: \nIOException "
+							+ ioe.getMessage());
+		}
+
 	}
 
-	
 	public List<Post> getAllPosts() {
 		// TODO users vs user
 		MemcachedClient memcachedClient = null;
-		
-		
+
 		List<Post> posts = null;
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 				new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
@@ -68,29 +90,29 @@ public class PostDAO implements Serializable {
 					.println("Couldn't create a connection to MemCachier: \nIOException "
 							+ ioe.getMessage());
 		}
-		
-		
+
 		return posts;
-		
+
 	}
-	
-	public List<Post> getAllPostsForUser(User user){
-		//return this.sessionFactory.getCurrentSession()
-		//		.createQuery("from Post p where p.author="+user.getId()).list();
-		List<Post> posts=new ArrayList<Post>();
+
+	public List<Post> getAllPostsForUser(User user) {
+		// return this.sessionFactory.getCurrentSession()
+		// .createQuery("from Post p where p.author="+user.getId()).list();
+		List<Post> posts = new ArrayList<Post>();
 		posts.addAll(user.getPosts());
 		return posts;
 	}
-	
-	public List<Post> getAllPostsForTopic(Topic topic){
-		List<Post> posts=new ArrayList<Post>();
+
+	public List<Post> getAllPostsForTopic(Topic topic) {
+		List<Post> posts = new ArrayList<Post>();
 		posts.addAll(topic.getPosts());
 		return posts;
 	}
-//	public User getAuthor(){
-//		
-//	}
-	
+
+	// public User getAuthor(){
+	//
+	// }
+
 	public void deletePost(long userId) {
 		Post post = (Post) this.sessionFactory.getCurrentSession().load(
 				Post.class, userId);
