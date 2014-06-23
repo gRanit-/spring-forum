@@ -40,25 +40,28 @@ public class TopicDAO implements Serializable{
 		 return (Topic) this.sessionFactory.getCurrentSession().get(Topic.class, id);
 	}
 	@SuppressWarnings("unchecked")
-	public ArrayList<Topic> getAllTopics() {
-		MemcachedClient mc=null;
-		ArrayList<Topic> topics=new ArrayList<Topic>();
+	public List<Topic> getAllTopics() {
+		MemcachedClient memcachedClient=null;
+		List<Topic> topics=null;
 		AuthDescriptor ad = new AuthDescriptor(new String[] { "PLAIN" },
 		        new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
 		            System.getenv("MEMCACHIER_PASSWORD")));
 		
 		try {
-		      mc = new MemcachedClient(
+			memcachedClient = new MemcachedClient(
 		          new ConnectionFactoryBuilder()
 		              .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
 		              .setAuthDescriptor(ad).build(),
 		          AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
 		      
-		    	  topics=(ArrayList<Topic>) this.sessionFactory.getCurrentSession()
+		     topics=(List<Topic>)memcachedClient.get("topics");
+		    if(topics==null) {		  
+		    		  topics=(List<Topic>) this.sessionFactory.getCurrentSession()
 							.createQuery("from Topic").list();
-		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
-		    	  mc.set("topics", 0, topics);
-			      topics=(ArrayList<Topic>)mc.get("topics");
+		    		  memcachedClient.set("topics", 0, topics);
+		    }	
+		    
+			
 
 		      
 		    } catch (IOException ioe) {
