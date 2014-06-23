@@ -58,7 +58,7 @@ public class TopicDAO implements Serializable{
 							.createQuery("from Topic").list();
 		    	  System.out.println("TOPICSSSSS===========NULLLLL!!!!!!");
 		    	  mc.set("topics", 0, topics);
-			      //topics=(ArrayList<Topic>)mc.get("topics");
+			      topics=(ArrayList<Topic>)mc.get("topics");
 
 		      
 		    } catch (IOException ioe) {
