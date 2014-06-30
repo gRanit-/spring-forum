@@ -1,7 +1,10 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+	 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
+<tiles:insertDefinition name="baseTemplate">
+    <tiles:putAttribute name="body">
 <body>
 	<h1>Title : ${title}</h1>
 	<h1>Message : ${message}</h1>
@@ -41,4 +44,6 @@
 		<h2><a href="../addUser">"Register" </a></h2>
 	</c:if>
 </body>
+  </tiles:putAttribute>
+</tiles:insertDefinition>
 </html>
