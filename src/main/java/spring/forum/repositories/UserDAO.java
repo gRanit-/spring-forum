@@ -48,8 +48,8 @@ public class UserDAO implements Serializable{
     
     public User getUserByEmail(String email) {
         String query = "from User u where u.email = ?";
-        return (User)this.sessionFactory.getCurrentSession().createQuery(query)
-                .setParameter(0, email).list().get(0);
+        return (User)this.sessionFactory.getCurrentSession().//get(User.class, email);
+        		createQuery(query).setParameter(0, email).list().get(0);
     }
     
 

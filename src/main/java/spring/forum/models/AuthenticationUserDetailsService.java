@@ -32,7 +32,7 @@ public class AuthenticationUserDetailsService implements UserDetailsService, Ser
 	public UserDetails loadUserByUsername(final String mail)
 			throws UsernameNotFoundException {
 		try{
-		
+		System.out.println("USER EMAIL: "+mail);
 		spring.forum.models.User user = userDAO.getUserByEmail(mail); // Pobieramy
 																		// usera
 																		// z db
