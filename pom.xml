@@ -257,7 +257,7 @@
 			<version>3.0.4</version>
 		</dependency>
 
-		<dependency>
+		<!--  <dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-jsp</artifactId>
 			<version>3.0.4</version>
@@ -268,6 +268,8 @@
 			<artifactId>tiles-servlet</artifactId>
 			<version>3.0.4</version>
 		</dependency>
+
+		
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-template</artifactId>
@@ -279,7 +281,7 @@
 			<version>3.0.4</version>
 		</dependency>
 
-
+-->
 
 	</dependencies>
 
