@@ -3,12 +3,15 @@
 
 
 <tiles-definitions>
+
 	<definition name ="baseTemplate" template="/WEB-INF/templates/base_template.jsp">
 	<put-attribute name="title" value="Simple title"/>
 	<put-attribute name="menu" value="/WEB-INF/templates/menu.jsp"/>
+	<put-attribute name="includes" value="/WEB-INF/templates/includes.jsp"/>
 	<put-attribute name ="body" value =""/>
 	</definition>
 	
+
 	<definition name="show_topic" extends="baseTemplate">
 	<put-attribute name="title" value="View a topic"/>
 	<put-attribute name="body" value="/WEB-INF/view/show_topic.jsp"/>
@@ -38,4 +41,5 @@
 	<put-attribute name="body" value="/WEB-INF/view/admin.jsp"/>
 	
 	</definition>
+	
 </tiles-definitions>

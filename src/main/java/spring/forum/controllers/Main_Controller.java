@@ -53,7 +53,7 @@ public class Main_Controller {
 	public ModelAndView defaultPage(HttpSession session) {
 		if(session==null)
 			return new ModelAndView();
-		System.out.println("WELCOME!!");
+		
 		ModelAndView model = new ModelAndView();
 		model.addObject("title", "Spring Security + Hibernate Example");
 		model.addObject("message", "This is default page!");
@@ -67,8 +67,6 @@ public class Main_Controller {
 	public ModelAndView adminPage() {
 
 		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
-		model.addObject("message", "This page is for ROLE_ADMIN only!");
 		model.setViewName("admin");
 
 		return model;
@@ -165,7 +163,6 @@ public class Main_Controller {
 		
 		userManager.addUser(user);
 		
-		//ModelAndView model =new ModelAndView();
 		System.out.println(user.getEmail());
 		return "login";
 
