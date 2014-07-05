@@ -14,13 +14,13 @@ import spring.forum.repositories.UserDAO;
 
 @Service
 public class TopicManager {
-
+	@Autowired
 	TopicDAO topicDAO;
 
-	@Autowired
-	public TopicManager(TopicDAO topicDAO) {
-		this.topicDAO = topicDAO;
-	}
+	
+	//public TopicManager(TopicDAO topicDAO) {
+	//	this.topicDAO = topicDAO;
+	//}
 
 	public TopicManager() {
 	}
@@ -55,8 +55,8 @@ public class TopicManager {
 		return topicDAO;
 	}
 
-	public void setTopicDAO(TopicDAO topicDAO) {
-		this.topicDAO = topicDAO;
-	}
+//	public void setTopicDAO(TopicDAO topicDAO) {
+//		this.topicDAO = topicDAO;
+//	}
 
 }

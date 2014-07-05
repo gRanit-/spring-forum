@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/tx
-		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-		  http://www.springframework.org/schema/aop 
-	
-  http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		">
 
 	<!-- Uncomment and your base-package here: <context:component-scan base-package="org.springframework.samples.web"/> -->
 
-			
-			
-<!--  
+		
+	<tx:annotation-driven />
+	<context:annotation-config />
+	<context:component-scan base-package="spring.*" />
+	<mvc:annotation-driven />	
+		
 <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-  
-    <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"/>
+    <property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
 </bean>
--->
 
-	<bean id="viewResolver"
+
+<!--
+ <bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 
 		<property name="viewClass"
@@ -39,12 +47,12 @@
 		</property>
 	</bean>
 
+ <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
+          p:order="1">
+    </bean>
+-->
 	<!-- Apache Tiles Configuration -->
 
-  <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
-           p:order="1">
-    
-    </bean>
 	<bean id="tilesConfigurer"
 		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
 		<property name="definitions">
@@ -87,7 +95,7 @@
 			value="#{'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + @dbUrl.getPath()}" />
 		<property name="username" value="#{ @dbUrl.getUserInfo().split(':')[0] }" />
 		<property name="password" value="#{ @dbUrl.getUserInfo().split(':')[1] }" />
-		<property name="connectionProperties" value=""></property>
+		<property name="connectionProperties" value="ssl=true;sslfactory=org.postgresql.ssl.NonValidatingFactory;"></property>
 	</bean>
 
 
@@ -119,17 +127,17 @@
 	</bean>
 
 	<bean id="userDAO" class="spring.forum.repositories.UserDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<!-- <property name="sessionFactory" ref="sessionFactory" />-->
 	</bean>
 	<bean id="postDAO" class="spring.forum.repositories.PostDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<!-- <property name="sessionFactory" ref="sessionFactory" />-->
 	</bean>
 	<bean id="topicDAO" class="spring.forum.repositories.TopicDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<!--  <property name="sessionFactory" ref="sessionFactory" />-->
 	</bean>
 
 	<bean id="userRoleDAO" class="spring.forum.repositories.UserRoleDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<!-- <property name="sessionFactory" ref="sessionFactory" />-->
 	</bean>
 
 
@@ -153,7 +161,7 @@
 	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService">
 		<property name="userDAO" ref="userDAO" />
 	</bean>
-
+ 
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="get*" read-only="true" />
@@ -161,7 +169,7 @@
 			<tx:method name="*" />
 		</tx:attributes>
 	</tx:advice>
-
+ 
 	<aop:config>
 		<aop:pointcut id="userServicePointCut"
 			expression="execution(* spring.forum.models.*Service.*(..))" />
@@ -170,10 +178,6 @@
 
 
 
-	<tx:annotation-driven />
-	<context:annotation-config />
-	<context:component-scan base-package="spring.forum.*" />
-	<mvc:annotation-driven />
   
 
 <!--Maping annnotation for spring mvc -->

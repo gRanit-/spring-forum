@@ -1,10 +1,10 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+  <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-
-	<div>
+<tiles:insertDefinition name="baseTemplate">
+<tiles:putAttribute name="body">
+	<div class="body">
 	<sec:authorize access="hasRole('ROLE_USER')">
 		<!-- For login user -->
 
@@ -45,3 +45,5 @@
 		</h2>
 	</c:if>
 </div>
+</tiles:putAttribute>
+</tiles:insertDefinition>

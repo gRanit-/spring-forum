@@ -50,15 +50,15 @@ public class Main_Controller {
 	
 	
 	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage(HttpSession session) {
+	public String defaultPage(HttpSession session, Model model) {
 		if(session==null)
-			return new ModelAndView();
+			return "";//new ModelAndView();
 		
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
-		model.addObject("message", "This is default page!");
-		model.setViewName("hello");
-		return model;
+		//ModelAndView model = new ModelAndView();
+		model.addAttribute("title", "Spring Security + Hibernate Example");
+		model.addAttribute("message", "This is default page!");
+		//model.setViewName("hello");
+		return "hello";
 
 	}
 
