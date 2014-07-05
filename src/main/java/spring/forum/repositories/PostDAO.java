@@ -18,16 +18,19 @@ import org.springframework.stereotype.Repository;
 import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
+import spring.forum.services.UsersManager;
 
 @Repository
 public class PostDAO implements Serializable {
-	
+
 	@Autowired
 	private MemcachedClient memcachedClient;
-	
+
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
+	@Autowired
+	private UsersManager usersManager;
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -40,28 +43,29 @@ public class PostDAO implements Serializable {
 	public void addPost(Post post) {
 		this.sessionFactory.getCurrentSession().save(post);
 
-			List<Topic> topics = (List<Topic>) this.sessionFactory.getCurrentSession()
-					.createQuery("from Topic").list();
-			memcachedClient.set("topics", 0, topics);
+		List<Topic> topics = (List<Topic>) this.sessionFactory
+				.getCurrentSession().createQuery("from Topic").list();
+		memcachedClient.set("topics", 0, topics);
 
 	}
 
-	public List<Post> getAllPosts() {
-		List<Post> posts=null;
-		/*
-		posts = (List<Post>) memcachedClient.get("posts");
-			if (posts == null) {
-				posts = (List<Post>) this.sessionFactory.getCurrentSession()
-						.createQuery("from Post").list();
-				memcachedClient.set("posts", 0, posts);
-			}
+	public Post getPost(long id) {
+		return (Post) this.sessionFactory.getCurrentSession().createQuery(
+				"from Post p Where p.post_id=" + id);
+	}
 
-		} catch (IOException ioe) {
-			System.err
-					.println("Couldn't create a connection to MemCachier: \nIOException "
-							+ ioe.getMessage());
-		}
-*/
+	public List<Post> getAllPosts() {
+		List<Post> posts = null;
+		/*
+		 * posts = (List<Post>) memcachedClient.get("posts"); if (posts == null)
+		 * { posts = (List<Post>) this.sessionFactory.getCurrentSession()
+		 * .createQuery("from Post").list(); memcachedClient.set("posts", 0,
+		 * posts); }
+		 * 
+		 * } catch (IOException ioe) { System.err
+		 * .println("Couldn't create a connection to MemCachier: \nIOException "
+		 * + ioe.getMessage()); }
+		 */
 		return posts;
 
 	}
@@ -83,6 +87,18 @@ public class PostDAO implements Serializable {
 				Post.class, userId);
 		if (post != null) {
 			this.sessionFactory.getCurrentSession().delete(post);
+		}
+	}
+
+	public void updatePost(Post post) {
+		this.sessionFactory.getCurrentSession().update(post);
+	}
+
+	public void updatePostText(String text, long id) {
+		Post post = getPost(id);
+		if (post != null) {
+			post.setText(text);
+			updatePost(post);
 		}
 	}
 

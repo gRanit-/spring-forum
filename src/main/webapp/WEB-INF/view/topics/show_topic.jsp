@@ -9,8 +9,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 </head>
 <body>
-
-<a href="../welcome">"Come back to main page" </a><br>
 	<b>
 	
 	${topic.title}<br>
@@ -41,5 +39,38 @@
         </tr>
     </table>
 	</form:form>
+	
+
+
+
+  <div class="page-header">
+    <h2>Posts</h2> </div>
+
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Topic's Title</th>
+        <th>Author</th>
+        <th>Created at</th>
+        <td>&nbsp;</td>
+        
+      </tr>
+    </thead>
+    <tbody class="post-index">
+   
+    </tbody>
+  </table>
+
+
+<div id="post-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <div id="inner-post-modal" class="modal-body">
+    </div>
+    </div>
+  </div>
+</div>
+	
+	
 </body>
 </html>

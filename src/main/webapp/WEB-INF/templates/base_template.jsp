@@ -13,16 +13,16 @@
 <title><tiles:insertAttribute name="title" ignore="true"/></title>
 <tiles:insertAttribute name="includes"/>
 </head>
+
 <body>
-<div class="container">
-    <div>
-    rtgghfhfghgfhfghfhfghfghfghfghfghfghfghfghfgh
+  <div class="menu">
         <tiles:insertAttribute name="menu"/>
-        </div>
-        <div>
-         rtgghfhfghgfhfghfhfghfghfghfghfghfghfghfghfgh
+    </div>
+<div class="container">
+  
+    <div class="body">
         <tiles:insertAttribute name="body"/>
-</div>
+	</div>
     
 </div>
 

@@ -52,7 +52,7 @@ public class TopicsController {
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-	@RequestMapping(value = "/showAllTopics", method = RequestMethod.GET)
+	@RequestMapping(value = { "/", "/welcome**","/showAllTopics"}, method = RequestMethod.GET)
 	public ModelAndView showAllTopics(Model model){
 		
 		List<Topic> topics=topicManager.getAllTopics();

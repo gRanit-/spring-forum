@@ -49,11 +49,11 @@ public class TopicDAO implements Serializable {
 
 		List<Topic> topics = null;
 
-			topics = (List<Topic>) this.sessionFactory.getCurrentSession()
-					.createQuery("from Topic").list();
-			
-			memcachedClient.delete("topics");
-			memcachedClient.set("topics", 0, topics);
+		topics = (List<Topic>) this.sessionFactory.getCurrentSession()
+				.createQuery("from Topic").list();
+
+		memcachedClient.delete("topics");
+		memcachedClient.set("topics", 0, topics);
 	}
 
 	public Topic getTopicByID(long id) {
@@ -66,7 +66,7 @@ public class TopicDAO implements Serializable {
 			topics = (List<Topic>) this.sessionFactory.getCurrentSession()
 					.createQuery("from Topic").list();
 			memcachedClient.set("topics", 0, topics);
-			
+
 		}
 
 		for (Topic t : topics)
@@ -82,7 +82,7 @@ public class TopicDAO implements Serializable {
 	public List<Topic> getAllTopics() {
 
 		List<Topic> topics = null;
-		
+
 		topics = (List<Topic>) memcachedClient.get("topics");
 		if (topics == null) {
 			System.out.println("Couldn't get all topics from memcached");
@@ -99,6 +99,25 @@ public class TopicDAO implements Serializable {
 		return this.sessionFactory.getCurrentSession()
 				.createQuery("from Topic p where p.author=" + user.getId())
 				.list();
+	}
+
+	public void updateTopicTitle(String text, long topicId) {
+		Topic topic = getTopicByID(topicId);
+		if (topic != null) {
+			topic.setTitle(text);
+			updateTopic(topic);
+		}
+	}
+	public void updateTopicText(String text, long topicId) {
+		Topic topic = getTopicByID(topicId);
+		if (topic != null) {
+			topic.setText(text);
+			updateTopic(topic);
+		}
+	}
+	
+	public void updateTopic(Topic topic) {
+		this.sessionFactory.getCurrentSession().update(topic);
 	}
 
 	public void deleteTopic(long topiId) {

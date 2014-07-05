@@ -35,19 +35,6 @@ public class Main_Controller {
 	@Autowired
 	private	 PostsManager postsManager;
 	
-	
-	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
-	public ModelAndView defaultPage(HttpSession session) {
-		if(session==null)
-			return new ModelAndView();
-		
-		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security + Hibernate Example");
-		model.addObject("message", "This is default page!");
-		model.setViewName("hello");
-		return model;
-
-	}
 
 	
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)

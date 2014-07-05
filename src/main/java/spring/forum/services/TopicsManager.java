@@ -14,12 +14,9 @@ import spring.forum.repositories.UserDAO;
 
 @Service("topicsManager")
 public class TopicsManager {
+	
 	@Autowired
 	TopicDAO topicDAO;
-
-
-	public TopicsManager() {
-	}
 
 	@Transactional
 	public void addTopic(Topic topic) {
@@ -40,7 +37,22 @@ public class TopicsManager {
 	public List<Topic> getAllTopicsForUser(User user) {
 		return topicDAO.getAllTopicsForUser(user);
 	}
-
+	
+	@Transactional
+	public void updateTopic(Topic topic) {
+		topicDAO.updateTopic(topic);
+	}
+	
+	@Transactional
+	public void updateTopicTitle(String text, long topicId) {
+		topicDAO.updateTopicTitle(text, topicId);
+	}
+	
+	@Transactional
+	public void updateTopicText(String text, long topicId) {
+		topicDAO.updateTopicText(text, topicId);
+	}
+	
 	@Transactional
 	public void deleteTopic(long userId) {
 		topicDAO.deleteTopic(userId);
@@ -51,8 +63,5 @@ public class TopicsManager {
 		return topicDAO;
 	}
 
-//	public void setTopicDAO(TopicDAO topicDAO) {
-//		this.topicDAO = topicDAO;
-//	}
 
 }

@@ -36,9 +36,9 @@
 </style>
 </head>
 <body onload='document.loginForm.username.focus();'>
-
-	<h1>Spring Security Login Form (Database + Hibernate Authentication)</h1>
-
+<center>
+	<h1>Hi!</h1>
+	<h3>Please Log In...</h3>
 	<div id="login-box">
 
 		<h3>Login with Username and Password</h3>
@@ -74,5 +74,6 @@
 		</form>
 	</div>
 
+</center>
 </body>
 </html>

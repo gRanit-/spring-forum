@@ -41,10 +41,7 @@ public class Topic implements Serializable{
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "topic",cascade=CascadeType.ALL)
 	private Set<Post> posts=new HashSet<Post>(0);
 
-	//@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "FORUM_ID", nullable = true)
-//	private Forum forum;
-
+	
 	public String getTitle() {
 		return title;
 	}
@@ -84,15 +81,7 @@ public class Topic implements Serializable{
 	public void setPosts(Set<Post> posts) {
 		this.posts = posts;
 	}
-/*
-//	public Forum getForum() {
-//		return forum;
-//	}
 
-	public void setForum(Forum forum) {
-		this.forum = forum;
-	}
-*/
 	public long getId() {
 		return id;
 	}

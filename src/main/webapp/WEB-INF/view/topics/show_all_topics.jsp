@@ -11,7 +11,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 </head>
 <body>
-<a href="../welcome">"Come back to main page" </a><br>
+
 	<table class="table table-bordered">
 		<c:forEach var="topic" items="${topics}">
 		<tr>

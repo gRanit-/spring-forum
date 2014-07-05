@@ -14,7 +14,7 @@ import spring.forum.repositories.UserDAO;
 
 @Service("postsManager")
 public class PostsManager {
-
+	@Autowired
 	PostDAO postDAO;
 
 	@Autowired
@@ -22,13 +22,15 @@ public class PostsManager {
 		this.postDAO = postDAO;
 	}
 
-	public PostsManager() {
-
-	}
 	@Transactional
 	public void addPost(Post post) {
 		postDAO.addPost(post);
 		
+	}
+	
+	@Transactional
+	public Post getPost(long id) {
+		return postDAO.getPost(id);
 	}
 	@Transactional
 	public List<Post> getAllPosts() {
@@ -45,16 +47,18 @@ public class PostsManager {
 	}
 
 	@Transactional
-	public void deletePost(long userId) {
-		 postDAO.deletePost(userId);
+	public void deletePost(long id) {
+		 postDAO.deletePost(id);
 	}
 	
-	public PostDAO getPostDAO() {
-		return postDAO;
+	@Transactional
+	public void updatePostText(String text, long id) {
+		postDAO.updatePostText(text, id);
 	}
-
-	public void setPostDAO(PostDAO postDAO) {
-		this.postDAO = postDAO;
+	
+	@Transactional
+	public void updatePost(Post post) {
+		postDAO.updatePost(post);
 	}
-
+	
 }

@@ -14,11 +14,11 @@
 
 	<definition name="show_topic" extends="baseTemplate">
 	<put-attribute name="title" value="View a topic"/>
-	<put-attribute name="body" value="/WEB-INF/view/show_topic.jsp"/>
+	<put-attribute name="body" value="/WEB-INF/view/topics/show_topic.jsp"/>
 	</definition>
 	<definition name="add_topic_form" extends="baseTemplate">
 	<put-attribute name="title" value="Add a new topic"/>
-	<put-attribute name="body" value="/WEB-INF/view/add_topic_form.jsp"/>
+	<put-attribute name="body" value="/WEB-INF/view/topics/add_topic_form.jsp"/>
 	</definition>
 	<definition name="hello" extends="baseTemplate">
 	<put-attribute name="title" value="Welcome!"/>
@@ -34,7 +34,7 @@
 	</definition>
 	<definition name="show_all_topics" extends="baseTemplate">
 	<put-attribute name="title" value="Show all topics"/>
-	<put-attribute name="body" value="/WEB-INF/view/show_all_topics.jsp"/>
+	<put-attribute name="body" value="/WEB-INF/view/topics/show_all_topics.jsp"/>
 	</definition>
 	<definition name="admin" extends="baseTemplate">
 	<put-attribute name="title" value="Administration"/>
