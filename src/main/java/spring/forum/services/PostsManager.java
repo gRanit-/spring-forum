@@ -12,17 +12,17 @@ import spring.forum.models.User;
 import spring.forum.repositories.PostDAO;
 import spring.forum.repositories.UserDAO;
 
-@Service
-public class PostManager {
+@Service("postsManager")
+public class PostsManager {
 
 	PostDAO postDAO;
 
 	@Autowired
-	public PostManager(PostDAO postDAO) {
+	public PostsManager(PostDAO postDAO) {
 		this.postDAO = postDAO;
 	}
 
-	public PostManager() {
+	public PostsManager() {
 
 	}
 	@Transactional

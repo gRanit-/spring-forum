@@ -12,17 +12,13 @@ import spring.forum.models.User;
 import spring.forum.repositories.TopicDAO;
 import spring.forum.repositories.UserDAO;
 
-@Service
-public class TopicManager {
+@Service("topicsManager")
+public class TopicsManager {
 	@Autowired
 	TopicDAO topicDAO;
 
-	
-	//public TopicManager(TopicDAO topicDAO) {
-	//	this.topicDAO = topicDAO;
-	//}
 
-	public TopicManager() {
+	public TopicsManager() {
 	}
 
 	@Transactional

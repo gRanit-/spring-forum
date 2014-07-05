@@ -9,19 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.forum.models.User;
 import spring.forum.repositories.UserDAO;
 
-public class UserManager{
+@Service("usersManager")
+public class UsersManager{
 
     private UserDAO userDAO;
 
     @Autowired
-    public UserManager(UserDAO userDAO) {
+    public UsersManager(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
-    public UserManager() {
+    public UsersManager() {
     }
 
-  
     @Transactional
     public void addUser(User user) {
         userDAO.addUser(user);

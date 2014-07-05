@@ -7,7 +7,23 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<!-- Uncomment and add your base-package here: <context:component-scan base-package="org.springframework.samples.service"/> -->
+
+	<bean id="userDAO" class="spring.forum.repositories.UserDAO"/>
 	
-	
+	<bean id="postDAO" class="spring.forum.repositories.PostDAO"/>
+
+	<bean id="topicDAO" class="spring.forum.repositories.TopicDAO"/>
+
+	<bean id="userRoleDAO" class="spring.forum.repositories.UserRoleDAO"/>
+
+	<bean id="postsManager" class="spring.forum.services.PostsManager"/>
+
+	<bean id="topicsManager" class="spring.forum.services.TopicsManager"/>
+
+	<bean id="usersManager" class="spring.forum.services.UsersManager"/>
+
+	<bean id="roleManager" class="spring.forum.services.UserRoleManager"/>
+
+	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService"/>
+
 </beans>

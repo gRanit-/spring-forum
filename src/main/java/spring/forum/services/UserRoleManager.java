@@ -1,12 +1,14 @@
 package spring.forum.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.forum.models.User;
 import spring.forum.models.UserRole;
 import spring.forum.repositories.UserRoleDAO;
 
+@Service("roleManager")
 public class UserRoleManager {
 	
 	private UserRoleDAO userRoleDAO;

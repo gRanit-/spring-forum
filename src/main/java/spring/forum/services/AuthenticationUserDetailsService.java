@@ -1,4 +1,4 @@
-package spring.forum.models;
+package spring.forum.services;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import spring.forum.models.UserRole;
 import spring.forum.repositories.UserDAO;
 import spring.forum.repositories.UserRoleDAO;
 
@@ -26,23 +27,14 @@ public class AuthenticationUserDetailsService implements UserDetailsService, Ser
 	private UserDAO userDAO;
 
 	@Autowired 
-	UserRoleDAO userRoleDAO;
+	private UserRoleDAO userRoleDAO;
 	
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(final String mail)
 			throws UsernameNotFoundException {
 		try{
-		System.out.println("USER EMAIL: "+mail);
-		spring.forum.models.User user = userDAO.getUserByEmail(mail); // Pobieramy
-																		// usera
-																		// z db
-																		// przy
-																		// pomocy
-																		// Hibernate
-		
-		List<UserRole> r=userRoleDAO.getRole(user);
-		
-		System.out.println("MY MAIL22222::::::::::" +user.getEmail());
+
+		spring.forum.models.User user = userDAO.getUserByEmail(mail);
 		List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
 		
 		return buildUserForAuthentication(user, authorities);
@@ -50,13 +42,7 @@ public class AuthenticationUserDetailsService implements UserDetailsService, Ser
 		return null;
 	}
 
-	public UserRoleDAO getUserRoleDAO() {
-		return userRoleDAO;
-	}
 
-	public void setUserRoleDAO(UserRoleDAO userRoleDAO) {
-		this.userRoleDAO = userRoleDAO;
-	}
 
 	private User buildUserForAuthentication(spring.forum.models.User user, // Tworzymy
 																			// obiekt
@@ -89,14 +75,6 @@ public class AuthenticationUserDetailsService implements UserDetailsService, Ser
 				setAuths);
 		System.out.println("Final");
 		return Result;
-	}
-	
-	public UserDAO getUserDao() {
-		return userDAO;
-	}
- 
-	public void setUserDAO(UserDAO userDao) {
-		this.userDAO = userDao;
 	}
 
 }

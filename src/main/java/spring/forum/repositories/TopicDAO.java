@@ -14,11 +14,13 @@ import net.spy.memcached.auth.PlainCallbackHandler;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
 
+@Repository
 public class TopicDAO implements Serializable {
 
 	@Autowired
@@ -52,8 +54,6 @@ public class TopicDAO implements Serializable {
 			
 			memcachedClient.delete("topics");
 			memcachedClient.set("topics", 0, topics);
-
-
 	}
 
 	public Topic getTopicByID(long id) {
