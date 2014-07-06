@@ -8,13 +8,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<script src="<c:url value="/resources/static/js/posts.js"/>"></script>
+<script src="<c:url value="/resources/static/js/posts/posts.js"/>"></script>
 </head>
 <body>
 	
 	<br>
-
-
 
 
 	<div class="page-header">

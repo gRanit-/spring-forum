@@ -1,5 +1,6 @@
 package spring.forum.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,24 +49,63 @@ public class PostsController {
 
 	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 	@RequestMapping(value = "/deletePost/{postID}", method = RequestMethod.DELETE)
-	public String deletePost(@PathVariable String postID) {
-		postsManager.deletePost(Integer.parseInt(postID));
-		return "";
+	public String deletePost(@PathVariable String postID, Principal principal) {
+		Post post = postsManager.getPost(Integer.parseInt(postID));
+
+		if (post.getAuthor().getEmail() == principal.getName())
+			postsManager.deletePost(Integer.parseInt(postID));
+
+		return "ok";
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-	@RequestMapping(value = "/getPost/{postID}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/deletePost/{postID}", method = RequestMethod.GET)
+	public ModelAndView deletePostForm(@PathVariable String postID,
+			Principal principal) {
+		Post post = postsManager.getPost(Integer.parseInt(postID));
+
+		if (post.getAuthor().getEmail() == principal.getName())
+			postsManager.deletePost(Integer.parseInt(postID));
+
+		return new ModelAndView("delete_post_form");
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+	@RequestMapping(value = "/editPost/{postID}", method = RequestMethod.PUT)
+	public String editPost(@PathVariable String postID, Principal principal) {
+		Post post = postsManager.getPost(Integer.parseInt(postID));
+
+		if (post.getAuthor().getEmail() == principal.getName())
+			postsManager.deletePost(Integer.parseInt(postID));
+
+		return "ok";
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+	@RequestMapping(value = "/editPost/{postID}", method = RequestMethod.GET)
+	public ModelAndView editPostForm(@PathVariable String postID,
+			Principal principal) {
+		Post post = postsManager.getPost(Integer.parseInt(postID));
+
+		if (post.getAuthor().getEmail() == principal.getName())
+			postsManager.deletePost(Integer.parseInt(postID));
+
+		return new ModelAndView("delete_post_form");
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+	@RequestMapping(value = "/getPost/{postID}", method = RequestMethod.GET)
 	public String getPost(@PathVariable String postID) {
 		postsManager.getPost(Integer.parseInt(postID));
 		return "welcome";
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-	@RequestMapping(value = "/addPostToTopic/{topicID}", method = RequestMethod.GET)
-	public ModelAndView addPost(@PathVariable String topicID,
-			HttpServletRequest request, Model model) {
-		long id = (Integer.parseInt(topicID));
-		model.addAttribute("id", id);
+	@RequestMapping(value = "/addPostToTopic", method = RequestMethod.GET)
+	// consumes={"application/json",
+	// "application/xml","application/x-www-form-urlencoded","text/html"})
+	public ModelAndView addPost() {
+
 		return new ModelAndView("add_post_form", "post", new Post());
 	}
 
@@ -76,26 +116,27 @@ public class PostsController {
 
 		long id = (Integer.parseInt(topicID));
 		model.addAttribute("id", id);
-		Topic topic=topicManager.getTopicByID(id);
+		Topic topic = topicManager.getTopicByID(id);
 		List<Post> posts = postsManager.getAllPostsForTopic(topic);
 		model.addAttribute("posts", posts);
 		return new ModelAndView("show_topic_posts");
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-	
-	@RequestMapping(value = "/addPostToTopic/{topicID}",method=RequestMethod.POST,
-			consumes={"application/json", "application/xml","application/x-www-form-urlencoded","text/html"})
+	@RequestMapping(value = "/addPostToTopic/{topicID}", method = RequestMethod.POST, consumes = {
+			"application/json", "application/xml",
+			"application/x-www-form-urlencoded", "text/html" })
+	@ResponseBody
+	public String addPostToTopic(@RequestBody String text,
+			@PathVariable String topicID) {
 
-	public  @ResponseBody String addPostToTopic( @RequestBody String text,@PathVariable String topicID) {
-		System.out.println("INININININININI");
-
-		Post post=new Post();
+		Post post = new Post();
 		post.setText(text);
 		Topic topic = topicManager.getTopicByID(Integer.parseInt(topicID));
 		post.setCreationDate(spring.forum.controllers.DateUtils
 				.getCurrentDate());
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserDetails userDetails = (UserDetails) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
 		User usr = usersManager.getUserByEmail(userDetails.getUsername());
 		post.setAuthor(usr);
 		post.setTopic(topic);
