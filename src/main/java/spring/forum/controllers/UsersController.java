@@ -103,8 +103,8 @@ public class UsersController {
 		System.out.println(user.getEmail());
 		return "login";
 	}
-
-	@RequestMapping(value = "/403", method = RequestMethod.GET)
+/*
+	@RequestMapping(value = "/403", method = {RequestMethod.GET,RequestMethod.POST})
 	public ModelAndView accesssDenied() {
 
 		ModelAndView model = new ModelAndView();
@@ -123,7 +123,7 @@ public class UsersController {
 		model.setViewName("403");
 		return model;
 	}
-
+*/
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/deleteUser/{userID}", method = RequestMethod.GET)
 	public String deleteUser(@PathVariable String userID) {

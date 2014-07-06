@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -83,20 +84,21 @@ public class PostsController {
 
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	
-	@RequestMapping(value = "/createPostInTopic/")
-	//,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE
-	public  @ResponseBody String addPostToTopic( @RequestParam(value="text") String text,@RequestParam(value="topicID") String topicID) {
+	@RequestMapping(value = "/addPostToTopic/{topicID}",method=RequestMethod.POST,
+			consumes={"application/json", "application/xml","application/x-www-form-urlencoded","text/html"})
+
+	public  @ResponseBody String addPostToTopic( @RequestBody String text,@PathVariable String topicID) {
 		System.out.println("INININININININI");
 
 		Post post=new Post();
 		post.setText(text);
-	Topic topic = topicManager.getTopicByID(Integer.parseInt(topicID));
+		Topic topic = topicManager.getTopicByID(Integer.parseInt(topicID));
 		post.setCreationDate(spring.forum.controllers.DateUtils
 				.getCurrentDate());
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User usr = usersManager.getUserByEmail(userDetails.getUsername());
 		post.setAuthor(usr);
-		//post.setTopic(topic);
+		post.setTopic(topic);
 		postsManager.addPost(post);
 
 		return "ok";

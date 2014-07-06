@@ -2,14 +2,17 @@ package spring.forum.controllers;
 
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +48,12 @@ public class Main_Controller {
 
 		return model;
 
+	}
+	
+	
+	@ExceptionHandler(Exception.class)
+	public void handleException(Exception ex, HttpServletRequest request) {
+		ex.printStackTrace();
 	}
 	
 	
