@@ -68,7 +68,7 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<configuration>
 					<jvmArgs>-Xmx1024m -Xms1024m</jvmArgs>
-					<scanIntervalSeconds>5</scanIntervalSeconds>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<stopPort>9966</stopPort>
 					<stopKey>foo</stopKey>
 				</configuration>

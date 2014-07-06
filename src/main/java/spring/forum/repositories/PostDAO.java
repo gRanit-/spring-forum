@@ -32,19 +32,15 @@ public class PostDAO implements Serializable {
 	@Autowired
 	private UsersManager usersManager;
 
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+	
 
 	public void addPost(Post post) {
 		this.sessionFactory.getCurrentSession().save(post);
 
 		List<Topic> topics = (List<Topic>) this.sessionFactory
 				.getCurrentSession().createQuery("from Topic").list();
+		
+		memcachedClient.delete("topics");
 		memcachedClient.set("topics", 0, topics);
 
 	}
@@ -73,6 +69,7 @@ public class PostDAO implements Serializable {
 	public List<Post> getAllPostsForUser(User user) {
 		List<Post> posts = new ArrayList<Post>();
 		posts.addAll(user.getPosts());
+		
 		return posts;
 	}
 
@@ -81,6 +78,9 @@ public class PostDAO implements Serializable {
 		posts.addAll(topic.getPosts());
 		return posts;
 	}
+	
+	
+
 
 	public void deletePost(long userId) {
 		Post post = (Post) this.sessionFactory.getCurrentSession().load(

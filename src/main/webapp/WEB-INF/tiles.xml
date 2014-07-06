@@ -11,15 +11,22 @@
 	<put-attribute name ="body" value =""/>
 	</definition>
 	
+	
+	<definition name="add_post_form" template="/WEB-INF/view/posts/add_post_form.jsp">
+	</definition>
+		<definition name="show_topic_posts" template="/WEB-INF/view/posts/show_topic_posts.jsp">
+	</definition>
 
 	<definition name="show_topic" extends="baseTemplate">
 	<put-attribute name="title" value="View a topic"/>
 	<put-attribute name="body" value="/WEB-INF/view/topics/show_topic.jsp"/>
 	</definition>
+	
 	<definition name="add_topic_form" extends="baseTemplate">
 	<put-attribute name="title" value="Add a new topic"/>
 	<put-attribute name="body" value="/WEB-INF/view/topics/add_topic_form.jsp"/>
 	</definition>
+	
 	<definition name="hello" extends="baseTemplate">
 	<put-attribute name="title" value="Welcome!"/>
 	<put-attribute name="body" value="/WEB-INF/view/hello.jsp"/>

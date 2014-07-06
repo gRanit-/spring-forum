@@ -14,6 +14,8 @@ import net.spy.memcached.auth.PlainCallbackHandler;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import spring.forum.models.Post;
@@ -27,23 +29,9 @@ public class TopicDAO implements Serializable {
 	private SessionFactory sessionFactory;
 	@Autowired
 	private MemcachedClient memcachedClient;
-
-	public MemcachedClient getMemcachedClient() {
-		return memcachedClient;
-	}
-
-	public void setMemcachedClient(MemcachedClient memcachedClient) {
-		this.memcachedClient = memcachedClient;
-	}
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
+	
+	
+	
 	public void addTopic(Topic topic) {
 		this.sessionFactory.getCurrentSession().save(topic);
 
@@ -51,15 +39,16 @@ public class TopicDAO implements Serializable {
 
 		topics = (List<Topic>) this.sessionFactory.getCurrentSession()
 				.createQuery("from Topic").list();
-
+		
 		memcachedClient.delete("topics");
 		memcachedClient.set("topics", 0, topics);
 	}
 
+
 	public Topic getTopicByID(long id) {
 		List<Topic> topics = null;
 		Topic topic = null;
-
+		
 		topics = (List<Topic>) memcachedClient.get("topics");
 		if (topics == null) {
 			System.out.println("Couldn't get topic from memcached");
@@ -78,7 +67,8 @@ public class TopicDAO implements Serializable {
 		return topic;
 	}
 
-	@SuppressWarnings("unchecked")
+
+
 	public List<Topic> getAllTopics() {
 
 		List<Topic> topics = null;
@@ -90,17 +80,19 @@ public class TopicDAO implements Serializable {
 					.createQuery("from Topic").list();
 			memcachedClient.set("topics", 0, topics);
 		}
-
 		return topics;
+		
 
 	}
-
+	
+	
 	public List<Topic> getAllTopicsForUser(User user) {
 		return this.sessionFactory.getCurrentSession()
 				.createQuery("from Topic p where p.author=" + user.getId())
 				.list();
 	}
 
+	
 	public void updateTopicTitle(String text, long topicId) {
 		Topic topic = getTopicByID(topicId);
 		if (topic != null) {
@@ -108,24 +100,34 @@ public class TopicDAO implements Serializable {
 			updateTopic(topic);
 		}
 	}
+
 	public void updateTopicText(String text, long topicId) {
 		Topic topic = getTopicByID(topicId);
 		if (topic != null) {
 			topic.setText(text);
 			updateTopic(topic);
 		}
+
 	}
 	
 	public void updateTopic(Topic topic) {
 		this.sessionFactory.getCurrentSession().update(topic);
+	
+		memcachedClient.delete("topics");
+		memcachedClient.set("topics", 0, getAllTopics());
 	}
-
+	
+	
 	public void deleteTopic(long topiId) {
 		Topic topic = (Topic) this.sessionFactory.getCurrentSession().load(
 				Topic.class, topiId);
 		if (topic != null) {
 			this.sessionFactory.getCurrentSession().delete(topic);
 		}
+		
+		memcachedClient.delete("topics");
+		memcachedClient.set("topics", 0, getAllTopics());
+		
 	}
 
 }
