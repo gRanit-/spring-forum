@@ -4,8 +4,12 @@ $(document).ready(function() {
 		addPostForm();
 	});
 	
-	$('.deletePost').click(function(event) {
-		deletePost();
+	$("button[name = 'deletePost']").click(function(event) {
+		alert();
+		deletePost(event.target.value);
+	});
+	$("button[name = 'editPost']").click(function(event) {
+		editPost(event.target.value);
 	});
 	
 });
@@ -18,25 +22,15 @@ function addPostForm() {
 	
 }
 
-function deletePost(number) {
-	var url="../deletePost/"+number;
+function deletePost(id) {
+	var url="../deletePost/"+id;
 	$('#inner-post-modal').load(url);
-	
-	
-	/*.ajax({	type : "GET",
-		url:url,
-		beforeSend : function(xhr) {
-			xhr.setRequestHeader("Accept", "application/json");
-			xhr.setRequestHeader("Content-Type", "application/json");
-			
-		}
-	});*/
-
 	$("#post-modal").modal("show");
 	
 }
 
-function editPost(){
-	var url="../editPost/"+number;
+function editPost(id){
+	var url="../editPost/"+id;
 	$('#inner-post-modal').load(url);
+	$("#post-modal").modal("show");
 }
