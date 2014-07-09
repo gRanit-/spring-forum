@@ -2,6 +2,7 @@ package spring.forum.services;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,11 @@ public class PostsManager {
 	@Transactional
 	public List<Post> getAllPostsForTopic(Topic topic) {
 		
-		return postDAO.getAllPostsForTopic(topic);
+		List<Post> posts=postDAO.getAllPostsForTopic(topic);
+		if(posts==null)
+			Hibernate.initialize(topic.getPosts());
+		
+		return posts;
 	}
 
 	@Transactional

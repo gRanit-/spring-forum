@@ -17,7 +17,7 @@
 		<jsp.version>2.2</jsp.version>
 		<jstl.version>1.2</jstl.version>
 		<servlet.version>2.5</servlet.version>
- <jettyVersion>8.1.13.v20130916</jettyVersion>
+		<jettyVersion>8.1.13.v20130916</jettyVersion>
 
 		<!-- Spring -->
 		<spring-framework.version>4.0.5.RELEASE</spring-framework.version>
@@ -77,8 +77,9 @@
 		</plugins>
 
 	</build>
-	<!-- MemCached -->
+
 	<repositories>
+		<!-- MemCached -->
 		<repository>
 			<id>spy</id>
 			<name>Spy Repository</name>
@@ -88,11 +89,19 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+
+
+		<!-- Jackson -->
+		<repository>
+			<id>codehaus</id>
+			<url>http://repository.codehaus.org/org/codehaus</url>
+		</repository>
+
 	</repositories>
 
 
 	<dependencies>
-
+		<!-- MemCached -->
 		<dependency>
 			<groupId>spy</groupId>
 			<artifactId>spymemcached</artifactId>
@@ -256,6 +265,15 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>4.0.2.GA</version>
+		</dependency>
+		<!-- Jackson -->
+
+
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.8.5</version>
 		</dependency>
 
 		<!-- Test Artifacts -->

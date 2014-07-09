@@ -34,11 +34,11 @@ public class Topic implements Serializable{
 	@Column(name = "CREATION_DATE")
 	private String date;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User author;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "topic",cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "topic",cascade=CascadeType.ALL)
 	private Set<Post> posts=new HashSet<Post>(0);
 
 	

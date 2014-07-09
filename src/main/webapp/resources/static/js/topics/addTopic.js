@@ -1,24 +1,25 @@
 $(document).ready(function() {
 	$('#cancel').click(function(event) {
-		$("#post-modal").modal("hide");
+		$("#topic-modal").modal("hide");
 	});
-	$('#submitPost').click(function(event) {
+	$('#submitTopic').click(function(event) {
 		event.preventDefault();
-		onSubmitPost();
+		onSubmitTopic();
 	});
 
 });
 
-function onSubmitPost() {
+function onSubmitTopic() {
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
-	var url = "../addPostToTopic/" + topicNumber;
+	var url = "../addTopic/";
 	var text = $('#text').val();
-
+	var title = $('#title').val();
+	var topic = { "title" : title, "text" : text};
 	$.ajax({
 		type : "POST",
 		url : url,
-		data : text,
+		data : JSON.stringify(topic),
 		beforeSend : function(xhr) {
 			xhr.setRequestHeader("Accept", "application/json");
 			xhr.setRequestHeader("Content-Type", "application/json");
@@ -27,10 +28,10 @@ function onSubmitPost() {
 		},
 		success : function(post) {
 
-			$('#post-index').load("../showPostsForTopic/" + topicNumber);
-			$("#post-modal").modal("hide");
+			
 		}
 
 	});
-
+	//$.load("../showAllTopics/");
+	$("#topic-modal").modal("hide");
 }

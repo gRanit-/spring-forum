@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
@@ -68,13 +69,19 @@ public class TopicsController {
 	}
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@RequestMapping(value = "/addTopic", method = RequestMethod.POST)
-	public ModelAndView createTopic(final @Valid @ModelAttribute spring.forum.models.Topic topic,
+	public ModelAndView createTopic(@RequestBody Topic topic,
 			final BindingResult result,
 			final SessionStatus status,Authentication authentication){
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		
 		User usr=usersManager.getUserByEmail(userDetails.getUsername());
 		topic.setAuthor(usr);
 		topic.setDate(DateUtils.getCurrentDate());
+		System.out.println(topic.getTitle());
+		System.out.println(topic.getText());
+		System.out.println(topic.getAuthor());
+		System.out.println(topic.getDate());
+		//System.out.println(topic.title);
 		topicManager.addTopic(topic);
 		
 		return new ModelAndView("show_topic","post",new Post()); 	

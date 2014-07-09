@@ -1,4 +1,4 @@
-package spring.forum.utils;
+package spring.forum.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,13 @@ import org.springframework.stereotype.Service;
 
 import spring.forum.models.Post;
 import spring.forum.models.Topic;
+import spring.forum.utils.ListUtility;
 
 @Service
-public class MemcacheUtility {
+public class MemcachedService {
 	@Autowired
 	private MemcachedClient memcachedClient;
-
+	
 	public void addPost(Post post) {
 		long topicID = post.getTopic().getId();
 		long postID = post.getId();
@@ -44,19 +45,22 @@ public class MemcacheUtility {
 		memcachedClient.add(topicString, 86400, topic);
 
 		List<List<String>> topicsByUsers = ((List<List<String>>) memcachedClient
-				.get("topicsByUsers"));
+				.get("topicsByUsersList"));
 		if (topicsByUsers == null)
 			topicsByUsers = new ArrayList<List<String>>();
+		
 		ListUtility.addList(topicsByUsers, String.valueOf(userID));
-
+		ListUtility.addElement(topicsByUsers, String.valueOf(userID), String.valueOf(topicID));
+		
 		List<List<String>> postsByTopics = ((List<List<String>>) memcachedClient
 				.get("postsByTopicsList"));
-		if (postsByTopics == null)
+		if (postsByTopics == null) 
 			postsByTopics = new ArrayList<List<String>>();
 		ListUtility.addList(postsByTopics, String.valueOf(topicID));
-
-		memcachedClient.delete("topicsByUsers");
-		memcachedClient.add("topicsByUsers", 86400, topicsByUsers);
+		
+		
+		memcachedClient.delete("topicsByUsersList");
+		memcachedClient.add("topicsByUsersList", 86400, topicsByUsers);
 
 		memcachedClient.delete("postsByTopicsList");
 		memcachedClient.add("postsByTopicsList", 86400, postsByTopics);
@@ -99,7 +103,7 @@ public class MemcacheUtility {
 				.get("postsByTopicsList");
 
 		List<List<String>> topicsByUsers = ((List<List<String>>) memcachedClient
-				.get("topicsByUsers"));
+				.get("topicsByUsersList"));
 
 		List<String> postsList = ListUtility.searchForList(postsByTopicsList,
 				String.valueOf(topicID));
@@ -110,6 +114,46 @@ public class MemcacheUtility {
 				String.valueOf(topicID));
 		memcachedClient.delete(topicString);
 
+	}
+
+	public Post getPost(long topicID, long postID) {
+		String postString = "post_" + topicID + "_" + postID;
+		return (Post) memcachedClient.get(postString);
+	}
+
+	public Post getPost(long postID) {
+		List<List<String>> postsByTopics = (List<List<String>>) memcachedClient
+				.get("postsByTopicsList");
+		for (List<String> postList : postsByTopics) {
+			String listkey = postList.get(0);
+			String value = "post_" + listkey + "_" + postID;
+			int index = ListUtility.searchForElement(postList, value);
+			if (index > 0)
+				return (Post) memcachedClient.get(postList.get(index));
+
+		}
+		return null;
+
+	}
+	
+	public Topic getTopic(long topicID) {
+		List<List<String>> topicsByUsers = (List<List<String>>) memcachedClient
+				.get("topicsByUsersList");
+		for (List<String> topicList : topicsByUsers) {
+			String listkey = topicList.get(0);
+			String value = "topic_" + topicID + "_" + listkey;
+			int index = ListUtility.searchForElement(topicList, value);
+			if (index > 0)
+				return (Topic) memcachedClient.get(topicList.get(index));
+
+		}
+		return null;
+
+	}
+
+	public Topic getTopic(long userID, long topicID) {
+		String topicString = "topic_" + topicID + "_" + userID;
+		return (Topic) memcachedClient.get(topicString);
 	}
 
 	public List<Post> getAllPosts() {
@@ -128,7 +172,7 @@ public class MemcacheUtility {
 
 	public List<Topic> getAllTopics() {
 		List<List<String>> topicList = (List<List<String>>) memcachedClient
-				.get("topicsByUsers");
+				.get("topicsByUsersList");
 		if (topicList == null)
 			return null;
 		else {
@@ -160,7 +204,7 @@ public class MemcacheUtility {
 	public List<Topic> getTopicsByUser(long userID) {
 
 		List<List<String>> topicsByUserList = (List<List<String>>) memcachedClient
-				.get("topicsByUsers");
+				.get("topicsByUsersList");
 		List<String> topicsStrings = ListUtility.searchForList(
 				topicsByUserList, String.valueOf(userID));
 		if (topicsStrings == null)

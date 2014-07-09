@@ -8,10 +8,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<script src="<c:url value="/resources/static/js/topics/topics.js"/>"></script>
 </head>
 <body>
-
+	<button class="btn" id="addTopic">Add Topic</button>
+	<c:if test="${empty topics}">
+	<h1>Currently there are no topics!</h1>
+	</c:if>
 	<table class="table table-bordered">
 		<c:forEach var="topic" items="${topics}">
 		<tr>
@@ -25,6 +30,13 @@
 		</tr>
 		</c:forEach>
 	</table>
-
+	<br>
+	<div id="topic-modal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div id="inner-topic-modal" class="modal-body"></div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

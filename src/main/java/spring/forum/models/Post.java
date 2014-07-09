@@ -28,11 +28,11 @@ public class Post implements Serializable {
 	@Column(name = "CREATION_DATE")
 	private String creationDate;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User author;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TOPIC_ID", nullable = false)
 	private Topic topic;
 

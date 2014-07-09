@@ -51,7 +51,7 @@ public class UserRole implements Serializable{
 	}
 	
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	public User getUser() {
 		return this.user;

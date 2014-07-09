@@ -23,6 +23,8 @@
 	<bean id="usersManager" class="spring.forum.services.UsersManager"/>
 
 	<bean id="roleManager" class="spring.forum.services.UserRoleManager"/>
+	
+	<bean id="memcachedService" class="spring.forum.services.MemcachedService"/>
 
 	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService"/>
 

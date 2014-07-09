@@ -1,15 +1,8 @@
 package spring.forum.repositories;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.spy.memcached.AddrUtil;
-import net.spy.memcached.ConnectionFactoryBuilder;
-import net.spy.memcached.MemcachedClient;
-import net.spy.memcached.auth.AuthDescriptor;
-import net.spy.memcached.auth.PlainCallbackHandler;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +11,15 @@ import org.springframework.stereotype.Repository;
 import spring.forum.models.Post;
 import spring.forum.models.Topic;
 import spring.forum.models.User;
+import spring.forum.services.MemcachedService;
+import spring.forum.services.TopicsManager;
 import spring.forum.services.UsersManager;
 
 @Repository
 public class PostDAO implements Serializable {
 
 	@Autowired
-	private MemcachedClient memcachedClient;
+	private MemcachedService memcachedService;
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -32,55 +27,54 @@ public class PostDAO implements Serializable {
 	@Autowired
 	private UsersManager usersManager;
 
-	
 
 	public void addPost(Post post) {
 		this.sessionFactory.getCurrentSession().save(post);
-
-		List<Topic> topics = (List<Topic>) this.sessionFactory
-				.getCurrentSession().createQuery("from Topic").list();
-		
-		memcachedClient.delete("topics");
-		memcachedClient.set("topics", 0, topics);
-
+		memcachedService.addPost(post);
 	}
 
 	public Post getPost(long id) {
-		return (Post) this.sessionFactory.getCurrentSession().createQuery(
-				"from Post p Where p.id=" + id).list().get(0);
+		Post post=memcachedService.getPost(id);
+		
+		if(post==null) {
+			post=(Post) this.sessionFactory.getCurrentSession()
+					.createQuery("from Post p Where p.id=" + id).list().get(0);
+			memcachedService.addPost(post);
+		}
+		return post;
 	}
-
+	public Post getPost(long topicID,long postID) {
+		Post post=memcachedService.getPost(topicID, postID);
+		
+		if(post==null) {
+			post=(Post) this.sessionFactory.getCurrentSession()
+					.createQuery("from Post p Where p.id=" + postID).list().get(0);
+			memcachedService.addPost(post);
+		}
+		return post;
+		
+	}
 	public List<Post> getAllPosts() {
 		List<Post> posts = null;
-		/*
-		 * posts = (List<Post>) memcachedClient.get("posts"); if (posts == null)
-		 * { posts = (List<Post>) this.sessionFactory.getCurrentSession()
-		 * .createQuery("from Post").list(); memcachedClient.set("posts", 0,
-		 * posts); }
-		 * 
-		 * } catch (IOException ioe) { System.err
-		 * .println("Couldn't create a connection to MemCachier: \nIOException "
-		 * + ioe.getMessage()); }
-		 */
+	
+		 posts = (List<Post>)memcachedService.getAllPosts();
+		 if (posts == null)
+			 posts = (List<Post>) this.sessionFactory.getCurrentSession().createQuery("from Post").list(); 
+
 		return posts;
 
 	}
 
 	public List<Post> getAllPostsForUser(User user) {
 		List<Post> posts = new ArrayList<Post>();
-		posts.addAll(user.getPosts());
-		
+		// posts.addAll(user.getPosts());
+		// this.sessionFactory.getCurrentSession().beginTransaction();
 		return posts;
 	}
 
 	public List<Post> getAllPostsForTopic(Topic topic) {
-		List<Post> posts = new ArrayList<Post>();
-		posts.addAll(topic.getPosts());
-		return posts;
+		return memcachedService.getPostsByTopic(topic.getId());
 	}
-	
-	
-
 
 	public void deletePost(long userId) {
 		Post post = (Post) this.sessionFactory.getCurrentSession().load(
@@ -88,10 +82,12 @@ public class PostDAO implements Serializable {
 		if (post != null) {
 			this.sessionFactory.getCurrentSession().delete(post);
 		}
+		memcachedService.deletePost(post);
 	}
 
 	public void updatePost(Post post) {
 		this.sessionFactory.getCurrentSession().update(post);
+		memcachedService.updatePost(post);
 	}
 
 	public void updatePostText(String text, long id) {

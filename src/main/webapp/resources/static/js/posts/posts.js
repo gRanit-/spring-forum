@@ -5,7 +5,6 @@ $(document).ready(function() {
 	});
 	
 	$("button[name = 'deletePost']").click(function(event) {
-
 		deletePost(event.target.value);
 	});
 	$("button[name = 'editPost']").click(function(event) {

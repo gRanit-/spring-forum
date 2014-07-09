@@ -55,7 +55,7 @@ public class User implements Serializable{
 		this.userRole = userRole;
 	}
  
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	public Set<Post> getPosts() {
 		return posts;
 	}
@@ -64,7 +64,7 @@ public class User implements Serializable{
 		this.posts = posts;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "author", cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	public Set<Topic> getTopics() {
 		return topics;
 	}
@@ -112,7 +112,7 @@ public class User implements Serializable{
 		this.email = email;
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
 	public Set<UserRole> getUserRole() {
 		return this.userRole;
 	}
