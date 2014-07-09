@@ -21,47 +21,38 @@ import spring.forum.repositories.UserDAO;
 import spring.forum.repositories.UserRoleDAO;
 
 @Service("userDetailsService")
-public class AuthenticationUserDetailsService implements UserDetailsService, Serializable {
+public class AuthenticationUserDetailsService implements UserDetailsService,
+		Serializable {
 
 	@Autowired
 	private UserDAO userDAO;
 
-	@Autowired 
+	@Autowired
 	private UserRoleDAO userRoleDAO;
-	
-	@Transactional(readOnly=true)
+
+	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(final String mail)
 			throws UsernameNotFoundException {
-		try{
+		try {
 
-		spring.forum.models.User user = userDAO.getUserByEmail(mail);
-		List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
-		
-		return buildUserForAuthentication(user, authorities);
-		}catch(Exception e){System.out.println(e);}
+			spring.forum.models.User user = userDAO.getUserByEmail(mail);
+			List<GrantedAuthority> authorities = buildUserAuthority(user
+					.getUserRole());
+
+			return buildUserForAuthentication(user, authorities);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return null;
 	}
 
-
-
-	private User buildUserForAuthentication(spring.forum.models.User user, // Tworzymy
-																			// obiekt
-																			// org.springframework.security.core.userdetails.User
-																			// na
-																			// potrzeby
-																			// auhentication
+	private User buildUserForAuthentication(spring.forum.models.User user,
 			List<GrantedAuthority> authorities) {
 		return new User(user.getEmail(), user.getPassword(), user.isEnabled(),
 				true, true, true, authorities);
 	}
 
-	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {// sprawdzamy role
-																				// i
-																				// na
-																				// podstawie
-																				// tego
-																				// tworzymy
-																				// userAuthorities
+	private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
 
 		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
 

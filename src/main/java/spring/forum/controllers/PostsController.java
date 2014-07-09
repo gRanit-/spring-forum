@@ -49,24 +49,19 @@ public class PostsController {
 
 	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 	@RequestMapping(value = "/deletePost/{postID}", method = RequestMethod.DELETE)
-	public String deletePost(@PathVariable String postID, Principal principal) {
+	public void deletePost(@PathVariable String postID, Principal principal) {
 		Post post = postsManager.getPost(Integer.parseInt(postID));
 
 		if (post.getAuthor().getEmail() == principal.getName())
 			postsManager.deletePost(Integer.parseInt(postID));
-
-		return "ok";
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 	@RequestMapping(value = "/deletePost/{postID}", method = RequestMethod.GET)
 	public ModelAndView deletePostForm(@PathVariable String postID,
-			Principal principal) {
+			Principal principal, Model model) {
 		Post post = postsManager.getPost(Integer.parseInt(postID));
-
-		if (post.getAuthor().getEmail() == principal.getName())
-			postsManager.deletePost(Integer.parseInt(postID));
-
+		model.addAttribute("post", post);
 		return new ModelAndView("delete_post_form");
 	}
 
@@ -78,7 +73,7 @@ public class PostsController {
 		if (post.getAuthor().getEmail() == principal.getName())
 			postsManager.deletePost(Integer.parseInt(postID));
 
-		return "ok";
+		return "";
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")

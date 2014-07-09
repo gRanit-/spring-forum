@@ -18,13 +18,9 @@ import javax.persistence.Table;
 public class UserRole implements Serializable{
 
 
-
-	
 	private Integer userRoleId;
-
 	
 	private User user;
-
 	
 	private String role;
 

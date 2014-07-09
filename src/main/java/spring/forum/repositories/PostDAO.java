@@ -47,7 +47,7 @@ public class PostDAO implements Serializable {
 
 	public Post getPost(long id) {
 		return (Post) this.sessionFactory.getCurrentSession().createQuery(
-				"from Post p Where p.post_id=" + id);
+				"from Post p Where p.id=" + id).list().get(0);
 	}
 
 	public List<Post> getAllPosts() {
