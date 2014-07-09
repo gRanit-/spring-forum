@@ -21,8 +21,7 @@ public class MemcachedService {
 		long topicID = post.getTopic().getId();
 		long postID = post.getId();
 		String postString = "post_" + topicID + "_" + postID;
-		memcachedClient.delete(postString);
-		memcachedClient.add(postString, 86400, post);
+		
 		List<List<String>> postsByTopics = (List<List<String>>) memcachedClient
 				.get("postsByTopicsList");
 		if (postsByTopics == null) {
@@ -33,6 +32,10 @@ public class MemcachedService {
 
 		ListUtility.addElement(postsByTopics, String.valueOf(topicID),
 				postString);
+		
+		memcachedClient.delete(postString);
+		memcachedClient.add(postString, 86400, post);
+		
 		memcachedClient.delete("postsByTopicsList");
 		memcachedClient.add("postsByTopicsList", 86400, postsByTopics);
 	}
@@ -41,8 +44,7 @@ public class MemcachedService {
 		long topicID = topic.getId();
 		long userID = topic.getAuthor().getId();
 		String topicString = "topic_" + topicID + "_" + userID;
-		memcachedClient.delete(topicString);
-		memcachedClient.add(topicString, 86400, topic);
+		
 
 		List<List<String>> topicsByUsers = ((List<List<String>>) memcachedClient
 				.get("topicsByUsersList"));
@@ -50,7 +52,15 @@ public class MemcachedService {
 			topicsByUsers = new ArrayList<List<String>>();
 		
 		ListUtility.addList(topicsByUsers, String.valueOf(userID));
-		ListUtility.addElement(topicsByUsers, String.valueOf(userID), String.valueOf(topicID));
+		System.out.println("Added Topic By User list...");
+		try {
+			Thread.sleep(1000*6);
+		} catch (InterruptedException e) {
+			 //TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ListUtility.addElement(topicsByUsers, String.valueOf(userID), topicString);
 		
 		List<List<String>> postsByTopics = ((List<List<String>>) memcachedClient
 				.get("postsByTopicsList"));
@@ -58,6 +68,8 @@ public class MemcachedService {
 			postsByTopics = new ArrayList<List<String>>();
 		ListUtility.addList(postsByTopics, String.valueOf(topicID));
 		
+		memcachedClient.delete(topicString);
+		memcachedClient.add(topicString, 86400, topic);
 		
 		memcachedClient.delete("topicsByUsersList");
 		memcachedClient.add("topicsByUsersList", 86400, topicsByUsers);

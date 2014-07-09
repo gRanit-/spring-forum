@@ -48,6 +48,14 @@ public class TopicDAO implements Serializable {
 			System.out.println("Couldn't get all topics from memcached");
 			topics = (List<Topic>) this.sessionFactory.getCurrentSession()
 					.createQuery("from Topic").list();
+			try {
+				
+				System.out.println("adding topics to memcached");
+			Thread.sleep(1000*6);
+		} catch (InterruptedException e) {
+			 //TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			for (Topic topic : topics)
 				memcachedService.addTopic(topic);
 		}
