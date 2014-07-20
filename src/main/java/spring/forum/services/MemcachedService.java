@@ -2,6 +2,8 @@ package spring.forum.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import net.spy.memcached.MemcachedClient;
 
@@ -10,78 +12,79 @@ import org.springframework.stereotype.Service;
 
 import spring.forum.models.Post;
 import spring.forum.models.Topic;
-import spring.forum.utils.ListUtility;
+import spring.forum.utils.CollectionUtility;
+import spring.forum.utils.CollectionUtility.*;
 
 @Service
 public class MemcachedService {
 	@Autowired
 	private MemcachedClient memcachedClient;
-	
+
 	public void addPost(Post post) {
-		long topicID = post.getTopic().getId();
-		long postID = post.getId();
-		String postString = "post_" + topicID + "_" + postID;
-		
-		List<List<String>> postsByTopics = (List<List<String>>) memcachedClient
-				.get("postsByTopicsList");
-		if (postsByTopics == null) {
-			addTopic(post.getTopic());
-			postsByTopics = (List<List<String>>) memcachedClient
-					.get("postsByTopicsList");
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("posts_1");
+		int i = 1;
+		while (set.size() > 1000) {
+			i++;
+			set = (Set<CollectionUtility.Element>) memcachedClient.get("posts_"
+					+ i);
+			if (set == null)
+				set = new TreeSet<Element>(new ComparatorUtil());
 		}
 
-		ListUtility.addElement(postsByTopics, String.valueOf(topicID),
-				postString);
-		
-		memcachedClient.delete(postString);
+		set.add(new CollectionUtility.Element((post.getAuthor().getId()), post
+				.getId(), post.getTopic().getId()));
+
+		memcachedClient.delete("posts_" + i);
+		memcachedClient.add("posts_" + i, 86400, set);
+		String postString = "p_" + post.getId();
 		memcachedClient.add(postString, 86400, post);
-		
-		memcachedClient.delete("postsByTopicsList");
-		memcachedClient.add("postsByTopicsList", 86400, postsByTopics);
+
 	}
 
 	public void addTopic(Topic topic) {
-		long topicID = topic.getId();
-		long userID = topic.getAuthor().getId();
-		String topicString = "topic_" + topicID + "_" + userID;
-		
 
-		List<List<String>> topicsByUsers = ((List<List<String>>) memcachedClient
-				.get("topicsByUsersList"));
-		if (topicsByUsers == null)
-			topicsByUsers = new ArrayList<List<String>>();
-		
-		ListUtility.addList(topicsByUsers, String.valueOf(userID));
-		System.out.println("Added Topic By User list...");
-		try {
-			Thread.sleep(1000*6);
-		} catch (InterruptedException e) {
-			 //TODO Auto-generated catch block
-			e.printStackTrace();
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("topics_1");
+		int i = 1;
+		while (set.size() > 1000) {
+			i++;
+			set = (Set<CollectionUtility.Element>) memcachedClient
+					.get("topics_" + i);
+			if (set == null)
+				set = new TreeSet<Element>(new ComparatorUtil());
 		}
-		
-		ListUtility.addElement(topicsByUsers, String.valueOf(userID), topicString);
-		
-		List<List<String>> postsByTopics = ((List<List<String>>) memcachedClient
-				.get("postsByTopicsList"));
-		if (postsByTopics == null) 
-			postsByTopics = new ArrayList<List<String>>();
-		ListUtility.addList(postsByTopics, String.valueOf(topicID));
-		
-		memcachedClient.delete(topicString);
-		memcachedClient.add(topicString, 86400, topic);
-		
-		memcachedClient.delete("topicsByUsersList");
-		memcachedClient.add("topicsByUsersList", 86400, topicsByUsers);
 
-		memcachedClient.delete("postsByTopicsList");
-		memcachedClient.add("postsByTopicsList", 86400, postsByTopics);
+		set.add(new Element((topic.getAuthor().getId()), (long) -1, topic
+				.getId()));
+
+		memcachedClient.delete("topics_" + i);
+		memcachedClient.add("topics_" + i, 86400, set);
+
+		String topicString = "t_" + topic.getId();
+		memcachedClient.add(topicString, 86400, topic);
+
 	}
 
 	public void updatePost(Post post) {
 		long topicID = post.getTopic().getId();
 		long postID = post.getId();
-		String postString = "post_" + topicID + "_" + postID;
+
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("posts_1");
+		Element element = new Element(post.getAuthor().getId(), postID, topicID);
+		int i = 1;
+		while (!set.remove(element)) {
+			i++;
+			set = (Set<CollectionUtility.Element>) memcachedClient.get("posts_"
+					+ i);
+
+		}
+		set.add(element);
+		memcachedClient.delete("posts_" + i);
+		memcachedClient.add("posts_" + i, 86400, set);
+
+		String postString = "p_" + post.getId();
 		memcachedClient.delete(postString);
 		memcachedClient.add(postString, 86400, post);
 	}
@@ -89,7 +92,22 @@ public class MemcachedService {
 	public void updateTopic(Topic topic) {
 		long topicID = topic.getId();
 		long userID = topic.getAuthor().getId();
-		String topicString = "topic_" + topicID + "_" + userID;
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("topics_1");
+		Element element = new Element(topic.getAuthor().getId(), (long) -1,
+				topicID);
+		int i = 1;
+		while (!set.remove(element)) {
+			i++;
+			set = (Set<CollectionUtility.Element>) memcachedClient
+					.get("topics_" + i);
+
+		}
+		set.add(element);
+		memcachedClient.delete("topics_" + i);
+		memcachedClient.add("topics_" + i, 86400, set);
+
+		String topicString = "t_" + topic.getId();
 		memcachedClient.delete(topicString);
 		memcachedClient.add(topicString, 86400, topic);
 	}
@@ -97,138 +115,149 @@ public class MemcachedService {
 	public void deletePost(Post post) {
 		long topicID = post.getTopic().getId();
 		long postID = post.getId();
-		String postString = "post_" + topicID + "_" + postID;
-		memcachedClient.delete(postString);
-		List<List<String>> postsByTopicsList = (List<List<String>>) memcachedClient
-				.get("postsByTopicsList");
 
-		ListUtility.deleteElement(postsByTopicsList, String.valueOf(topicID),
-				String.valueOf(postID));
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("posts_1");
+		Element element = new Element(post.getAuthor().getId(), postID, topicID);
+		int i = 1;
+		while (!set.remove(element)) {
+			i++;
+			set = (Set<CollectionUtility.Element>) memcachedClient.get("posts_"
+					+ i);
+
+		}
+
+		String postString = "p_" + post.getAuthor().getId() + "_"
+				+ post.getTopic().getId() + "_" + post.getId();
+		memcachedClient.delete(postString);
 	}
 
 	public void deleteTopic(Topic topic) {
 		long topicID = topic.getId();
 		long userID = topic.getAuthor().getId();
-		String topicString = "topic_" + topicID + "_" + userID;
-		memcachedClient.delete(topicString);
-		List<List<String>> postsByTopicsList = (List<List<String>>) memcachedClient
-				.get("postsByTopicsList");
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("topics_1");
+		Element element = new Element(topic.getAuthor().getId(), (long) -1,
+				topicID);
+		int i = 1;
+		while (!set.remove(element)) {
+			i++;
+			set = (Set<CollectionUtility.Element>) memcachedClient
+					.get("topics_" + i);
 
-		List<List<String>> topicsByUsers = ((List<List<String>>) memcachedClient
-				.get("topicsByUsersList"));
+		}
 
-		List<String> postsList = ListUtility.searchForList(postsByTopicsList,
-				String.valueOf(topicID));
-		for (String post : postsList)
-			memcachedClient.delete(post);
-		postsByTopicsList.remove(postsList);
-		ListUtility.deleteElement(topicsByUsers, String.valueOf(userID),
-				String.valueOf(topicID));
+		String topicString = "t_" + topic.getId();
 		memcachedClient.delete(topicString);
 
-	}
-
-	public Post getPost(long topicID, long postID) {
-		String postString = "post_" + topicID + "_" + postID;
-		return (Post) memcachedClient.get(postString);
 	}
 
 	public Post getPost(long postID) {
-		List<List<String>> postsByTopics = (List<List<String>>) memcachedClient
-				.get("postsByTopicsList");
-		for (List<String> postList : postsByTopics) {
-			String listkey = postList.get(0);
-			String value = "post_" + listkey + "_" + postID;
-			int index = ListUtility.searchForElement(postList, value);
-			if (index > 0)
-				return (Post) memcachedClient.get(postList.get(index));
-
-		}
-		return null;
-
+		String postString = "p_" + postID;
+		return (Post) memcachedClient.get(postString);
 	}
-	
+
 	public Topic getTopic(long topicID) {
-		List<List<String>> topicsByUsers = (List<List<String>>) memcachedClient
-				.get("topicsByUsersList");
-		for (List<String> topicList : topicsByUsers) {
-			String listkey = topicList.get(0);
-			String value = "topic_" + topicID + "_" + listkey;
-			int index = ListUtility.searchForElement(topicList, value);
-			if (index > 0)
-				return (Topic) memcachedClient.get(topicList.get(index));
-
-		}
-		return null;
-
-	}
-
-	public Topic getTopic(long userID, long topicID) {
-		String topicString = "topic_" + topicID + "_" + userID;
-		return (Topic) memcachedClient.get(topicString);
+		return (Topic) memcachedClient.get("t_" + topicID);
 	}
 
 	public List<Post> getAllPosts() {
-		List<List<String>> postList = (List<List<String>>) memcachedClient
-				.get("postsByTopicsList");
-		if (postList == null)
-			return null;
-		else {
-			List<Post> posts = new ArrayList<Post>();
-			for (List<String> list : postList)
-				for (int i = 1; i < list.size(); i++)
-					posts.add((Post) memcachedClient.get(list.get(i)));
-			return posts;
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("posts_1");
+		List<Post> postList = new ArrayList<Post>();
+		int i = 1;
+		while (set.size() > 0) {
+			i++;
+			for (Element e : set) {
+				long postID = e.postID;
+				String postString = "p_" + postID;
+				Post post = (Post) memcachedClient.get(postString);
+				if (post != null)
+					postList.add(post);
+			}
+
+			set = (Set<CollectionUtility.Element>) memcachedClient.get("posts_"
+					+ i);
+			if (set == null)
+				break;
 		}
+		return postList;
 	}
 
 	public List<Topic> getAllTopics() {
-		List<List<String>> topicList = (List<List<String>>) memcachedClient
-				.get("topicsByUsersList");
-		if (topicList == null)
-			return null;
-		else {
-			List<Topic> topics = new ArrayList<Topic>();
-			for (List<String> list : topicList)
-				for (int i = 1; i < list.size(); i++)
-					topics.add((Topic) memcachedClient.get(list.get(i)));
-			return topics;
+		Set<CollectionUtility.Element> set = (Set<CollectionUtility.Element>) memcachedClient
+				.get("topics_1");
+		List<Topic> topicsList = new ArrayList<Topic>();
+		int i = 1;
+		while (set.size() > 0) {
+			i++;
+			for (Element e : set) {
+				long topicID = e.topicID;
+				String topicString = "t_" + topicID;
+				Topic topic = (Topic) memcachedClient.get(topicString);
+				if (topic != null)
+					topicsList.add(topic);
+			}
+
+			set = (Set<CollectionUtility.Element>) memcachedClient
+					.get("topics_" + i);
+			if (set == null)
+				break;
 		}
+		return topicsList;
 	}
 
 	public List<Post> getPostsByTopic(long topicID) {
-		List<List<String>> postsByTopicsList = (List<List<String>>) memcachedClient
-				.get("postsByTopicsList");
-		List<String> postsStrings = ListUtility.searchForList(
-				postsByTopicsList, String.valueOf(topicID));
-		if (postsStrings == null)
-			return null;
-		else {
-			List<Post> posts = new ArrayList<Post>();
-			for (String postString : postsStrings)
-				posts.add((Post) memcachedClient.get(postString));
+		TreeSet<CollectionUtility.Element> set = (TreeSet<CollectionUtility.Element>) memcachedClient
+				.get("posts_1");
+		List<Post> postList = new ArrayList<Post>();
+		int i = 1;
+		while (set.size() > 0) {
+			i++;
+			Set<CollectionUtility.Element> subset = set.subSet(new Element(
+					(long) 0, (long) 0, topicID), new Element((long) 0,
+					(long) 0, topicID + 1));
+			for (Element e : subset) {
+				long postID = e.postID;
+				String postString = "p_" + postID;
+				Post post = (Post) memcachedClient.get(postString);
+				if (post != null)
+					postList.add(post);
+			}
 
-			return posts;
+			set = (TreeSet<CollectionUtility.Element>) memcachedClient
+					.get("posts_" + i);
+			if (set == null)
+				break;
 		}
-
+		return postList;
 	}
 
 	public List<Topic> getTopicsByUser(long userID) {
 
-		List<List<String>> topicsByUserList = (List<List<String>>) memcachedClient
-				.get("topicsByUsersList");
-		List<String> topicsStrings = ListUtility.searchForList(
-				topicsByUserList, String.valueOf(userID));
-		if (topicsStrings == null)
-			return null;
-		else {
-			List<Topic> topics = new ArrayList<Topic>();
-			for (String topicString : topicsStrings)
-				topics.add((Topic) memcachedClient.get(topicString));
+		TreeSet<CollectionUtility.Element> set = (TreeSet<CollectionUtility.Element>) memcachedClient
+				.get("topics_1");
+		List<Topic> topicsList = new ArrayList<Topic>();
+		int i = 1;
 
-			return topics;
+		while (set.size() > 0) {
+			i++;
+			Set<CollectionUtility.Element> subset = set.subSet(new Element(
+					userID, (long) -1, (long) 0), new Element(userID + 1,
+					(long) -1, (long) 0));
+			for (Element e : set) {
+				long topicID = e.topicID;
+				String topicString = "t_" + topicID;
+				Topic topic = (Topic) memcachedClient.get(topicString);
+				if (topic != null)
+					topicsList.add(topic);
+			}
+
+			set = (TreeSet<CollectionUtility.Element>) memcachedClient
+					.get("topics_" + i);
+			if (set == null)
+				break;
 		}
-
+		return topicsList;
 	}
-
 }

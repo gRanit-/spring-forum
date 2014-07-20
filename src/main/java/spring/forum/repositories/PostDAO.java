@@ -44,7 +44,7 @@ public class PostDAO implements Serializable {
 		return post;
 	}
 	public Post getPost(long topicID,long postID) {
-		Post post=memcachedService.getPost(topicID, postID);
+		Post post=memcachedService.getPost(postID);
 		
 		if(post==null) {
 			post=(Post) this.sessionFactory.getCurrentSession()
@@ -60,7 +60,8 @@ public class PostDAO implements Serializable {
 		 posts = (List<Post>)memcachedService.getAllPosts();
 		 if (posts == null)
 			 posts = (List<Post>) this.sessionFactory.getCurrentSession().createQuery("from Post").list(); 
-
+		 else if(posts.size()==0)
+			 posts = (List<Post>) this.sessionFactory.getCurrentSession().createQuery("from Post").list();
 		return posts;
 
 	}
