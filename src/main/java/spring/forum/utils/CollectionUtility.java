@@ -1,12 +1,20 @@
 package spring.forum.utils;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Comparator;
-import java.util.List;
 
-public class CollectionUtility {
+public class CollectionUtility implements Serializable {
 
-	public static class Element {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -191767819485456047L;
+
+	public static class Element implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4796073920972649498L;
 		public Long userID ;
 		public Long postID ;
 		public Long topicID;
@@ -23,7 +31,12 @@ public class CollectionUtility {
 		}
 	}
 
-	public static class ComparatorUtil implements Comparator<Element> {
+	public static class ComparatorUtil implements Comparator<Element>, Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4790153624805339419L;
 
 		public int compare(Element o1, Element o2) {
 			if (o1.postID == -1) {

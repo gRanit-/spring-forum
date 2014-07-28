@@ -26,6 +26,6 @@
 	
 	<bean id="memcachedService" class="spring.forum.services.MemcachedService"/>
 
-	<bean id="userDetailsService" class="spring.forum.models.AuthenticationUserDetailsService"/>
+	<bean id="userDetailsService" class="spring.forum.services.AuthenticationUserDetailsService"/>
 
 </beans>
