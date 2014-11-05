@@ -27,12 +27,11 @@ public class TopicDAO implements Serializable {
 
 	public Topic getTopicByID(long id) {
 
-		Topic topic = memcachedService.getTopic(id);
+		Topic topic = null;//memcachedService.getTopic(id);
 		if (topic == null) {
-			System.out.println("Couldn't get topic from memcached");
-			topic = (Topic) this.sessionFactory.getCurrentSession()
-					.createQuery("from Topic t where t.id=" + id).list().get(0);
-			memcachedService.addTopic(topic);
+			//System.out.println("Couldn't get topic from memcached");
+			topic = (Topic) this.sessionFactory.getCurrentSession().get(Topic.class,id);
+		//	memcachedService.addTopic(topic);
 
 		}
 
@@ -43,34 +42,36 @@ public class TopicDAO implements Serializable {
 
 		List<Topic> topics = null;
 
-		topics = (List<Topic>) memcachedService.getAllTopics();
+		//topics = (List<Topic>) memcachedService.getAllTopics();
 		if (topics == null) {
-			System.out.println("Couldn't get all topics from memcached");
+			//System.out.println("Couldn't get all topics from memcached");
 			topics = (List<Topic>) this.sessionFactory.getCurrentSession()
 					.createQuery("from Topic").list();
-			try {
+		}
+			
+			/*try {
 				
-				System.out.println("adding topics to memcached");
-			Thread.sleep(1000*6);
+				//System.out.println("adding topics to memcached");
+			//Thread.sleep(1000*6);
 		} catch (InterruptedException e) {
 			 //TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			for (Topic topic : topics)
-				memcachedService.addTopic(topic);
-		}
+			//for (Topic topic : topics)
+			//	memcachedService.addTopic(topic);
+		}*/
 		return topics;
 
 	}
 
 	public List<Topic> getAllTopicsForUser(User user) {
-		List<Topic> topics = memcachedService.getTopicsByUser(user.getId());
+		List<Topic> topics = null;//memcachedService.getTopicsByUser(user.getId());
 		if (topics == null) {
 			topics = this.sessionFactory.getCurrentSession()
 					.createQuery("from Topic p where p.author=" + user.getId())
 					.list();
-			for (Topic topic : topics)
-				memcachedService.addTopic(topic);
+			//for (Topic topic : topics)
+			//	memcachedService.addTopic(topic);
 
 		}
 		return topics;
@@ -95,7 +96,7 @@ public class TopicDAO implements Serializable {
 
 	public void updateTopic(Topic topic) {
 		this.sessionFactory.getCurrentSession().update(topic);
-		memcachedService.updateTopic(topic);
+		//memcachedService.updateTopic(topic);
 	}
 
 	public void deleteTopic(long topiId) {
@@ -104,7 +105,7 @@ public class TopicDAO implements Serializable {
 		if (topic != null) {
 			this.sessionFactory.getCurrentSession().delete(topic);
 		}
-		memcachedService.deleteTopic(topic);
+		//memcachedService.deleteTopic(topic);
 
 	}
 

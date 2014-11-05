@@ -17,7 +17,7 @@ import spring.forum.utils.CollectionUtility.*;
 
 @Service
 public class MemcachedService {
-	@Autowired
+	//@Autowired
 	private MemcachedClient memcachedClient;
 
 	public void addPost(Post post) {
